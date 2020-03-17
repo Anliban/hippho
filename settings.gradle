@@ -1,2 +1,3 @@
-include ':app'
+include ':app', ':opencv'
 rootProject.name='Hippho'
+include ':java'
