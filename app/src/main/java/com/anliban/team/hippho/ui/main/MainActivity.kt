@@ -10,15 +10,12 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.base.BaseActivity
 import com.anliban.team.hippho.databinding.ActivityMainBinding
 import com.anliban.team.hippho.util.compareHistogram
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
-import org.opencv.core.Core
-import org.opencv.core.Mat
 import javax.inject.Inject
 
 
@@ -35,7 +32,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setPermission()
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
         setupBinding()
 
     }
