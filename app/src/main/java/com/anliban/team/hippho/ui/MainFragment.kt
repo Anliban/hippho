@@ -1,50 +1,55 @@
-package com.anliban.team.hippho.ui.main
+package com.anliban.team.hippho.ui
 
 import android.Manifest
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.anliban.team.hippho.R
-import com.anliban.team.hippho.databinding.ActivityMainBinding
+import com.anliban.team.hippho.databinding.FragmentMainBinding
 import com.anliban.team.hippho.util.activityViewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class MainActivity : DaggerAppCompatActivity() {
+class MainFragment : DaggerFragment() {
+
+    private lateinit var binding: FragmentMainBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: MainViewModel by activityViewModel {
-        viewModelFactory.create(
-            MainViewModel::class.java
-        )
-    }
+    private val viewModel by activityViewModel { viewModelFactory.create(MainViewModel::class.java) }
 
-    private lateinit var binding: ActivityMainBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.apply {
-            viewModel = this@MainActivity.viewModel
-            lifecycleOwner = this@MainActivity
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentMainBinding.inflate(inflater, container, false).apply {
+            viewModel = this@MainFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
         }
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setPermission()
     }
 
     private fun setPermission() {
-        TedPermission.with(this)
+        TedPermission.with(requireContext())
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {
                     viewModel.loadImages()
                 }
 
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    finish()
+                    requireActivity().finish()
                 }
 
             })

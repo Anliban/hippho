@@ -1,4 +1,4 @@
-package com.anliban.team.hippho.ui.main
+package com.anliban.team.hippho.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
