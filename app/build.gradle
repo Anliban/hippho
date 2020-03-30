@@ -24,6 +24,15 @@ android {
             }
         }
     }
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -52,6 +61,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
     implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
@@ -78,10 +88,6 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
-    // Rxjava
-    implementation "io.reactivex.rxjava2:rxjava:$rxjava2_version"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
-
     // Ted
     implementation "gun0912.ted:tedpermission:$ted_permission_version"
 
@@ -97,6 +103,4 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "io.mockk:mockk:1.9.3"
     testImplementation "androidx.room:room-testing:$room_version"
-
-    //implementation project(path: ':opencv')
 }
