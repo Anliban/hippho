@@ -5,33 +5,35 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.anliban.team.hippho.R
-import com.anliban.team.hippho.base.BaseActivity
 import com.anliban.team.hippho.databinding.ActivityMainBinding
+import com.anliban.team.hippho.util.activityViewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
+import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
-
-class MainActivity : BaseActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModel {
+        viewModelFactory.create(
+            MainViewModel::class.java
+        )
+    }
 
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupBinding()
-        setPermission()
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
-
-    private fun setupBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this@MainActivity
+        binding.apply {
+            viewModel = this@MainActivity.viewModel
+            lifecycleOwner = this@MainActivity
+        }
+
+        setPermission()
     }
 
     private fun setPermission() {
