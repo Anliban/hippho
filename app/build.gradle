@@ -91,6 +91,9 @@ dependencies {
     // Ted
     implementation "gun0912.ted:tedpermission:$ted_permission_version"
 
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timber"
+
     // Glide
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
