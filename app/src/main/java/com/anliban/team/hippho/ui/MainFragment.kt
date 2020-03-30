@@ -33,6 +33,10 @@ class MainFragment : DaggerFragment() {
             lifecycleOwner = viewLifecycleOwner
         }
 
+        binding.recyclerView.apply {
+            adapter = MainAdapter(viewLifecycleOwner, viewModel)
+        }
+
         return binding.root
     }
 
