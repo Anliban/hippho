@@ -4,23 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anliban.team.hippho.data.ImageLoader
-import com.anliban.team.hippho.model.Image
+import com.anliban.team.hippho.domain.GetImageByDateUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    private val imageLoader: ImageLoader
+    private val getImageByDateUseCase: GetImageByDateUseCase
 ) : ViewModel() {
 
-    private val _imageList = MutableLiveData<List<Image>>()
-    val imageList: LiveData<List<Image>>
+    private val _imageList = MutableLiveData<List<MainUiModel>>()
+    val imageList: LiveData<List<MainUiModel>>
         get() = _imageList
 
     fun loadImages() {
         viewModelScope.launch {
-            imageLoader.getImages().collect {
+            getImageByDateUseCase.execute(Unit).collect {
                 _imageList.value = it
             }
         }

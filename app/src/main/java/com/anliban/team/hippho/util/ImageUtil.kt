@@ -8,7 +8,6 @@ import org.opencv.core.MatOfInt
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 
-
 fun compareHistogram(context: Context, filename1: String?, filename2: String?): Int {
     var retVal = 0
     val startTime = System.currentTimeMillis()
@@ -23,8 +22,8 @@ fun compareHistogram(context: Context, filename1: String?, filename2: String?): 
     Imgproc.cvtColor(img1, hsvImg1, Imgproc.COLOR_BGR2HSV)
     Imgproc.cvtColor(img2, hsvImg2, Imgproc.COLOR_BGR2HSV)
     // Set configuration for calchist()
-    val listImg1: MutableList<Mat> = ArrayList<Mat>()
-    val listImg2: MutableList<Mat> = ArrayList<Mat>()
+    val listImg1: MutableList<Mat> = mutableListOf()
+    val listImg2: MutableList<Mat> = mutableListOf()
     listImg1.add(hsvImg1)
     listImg2.add(hsvImg2)
     val ranges = MatOfFloat(0f, 255f)
