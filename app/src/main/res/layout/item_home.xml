@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.anliban.team.hippho.model.Image" />
+            type="com.anliban.team.hippho.ui.home.HomeUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,18 +39,21 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="2020.02.02" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/item_main_thumbnail"
-            android:layout_width="60dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="@dimen/match_constraint"
             android:layout_height="60dp"
-            android:layout_marginTop="6dp"
             android:layout_marginBottom="12dp"
-            android:scaleType="centerCrop"
-            app:bindImage="@{item.path}"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            app:bindHomeImages="@{item.item}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guide_end"
             app:layout_constraintStart_toEndOf="@id/guide_start"
             app:layout_constraintTop_toBottomOf="@id/item_main_date"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:itemCount="5"
+            tools:listitem="@layout/item_image_horizontal" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

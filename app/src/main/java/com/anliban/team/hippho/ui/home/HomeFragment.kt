@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentHomeBinding
+import com.anliban.team.hippho.ui.home.adapter.HomeAdapter
 import com.anliban.team.hippho.util.viewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
@@ -34,10 +35,9 @@ class HomeFragment : DaggerFragment() {
         }
 
         binding.recyclerView.apply {
-            adapter = HomeAdapter(
-                viewLifecycleOwner,
-                viewModel
-            )
+            adapter = HomeAdapter(viewLifecycleOwner) {
+                navigateToDetail(it)
+            }
         }
 
         return binding.root
@@ -68,5 +68,9 @@ class HomeFragment : DaggerFragment() {
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
             .check()
+    }
+
+    private fun navigateToDetail(item: HomeUiModel) {
+
     }
 }

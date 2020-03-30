@@ -1,5 +1,6 @@
 package com.anliban.team.hippho.util
 
+import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -45,4 +46,9 @@ inline fun <reified T : ViewModel> Fragment.activityViewModel(
             }
         }
     }
+}
+
+fun dp2px(context: Context, dpValue: Float): Int {
+    val scale = context.resources.displayMetrics.density
+    return (dpValue * scale + 0.5f).toInt()
 }

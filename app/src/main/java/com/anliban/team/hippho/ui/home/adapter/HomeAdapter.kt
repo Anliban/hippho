@@ -1,4 +1,4 @@
-package com.anliban.team.hippho.ui.home
+package com.anliban.team.hippho.ui.home.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,20 +7,25 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.anliban.team.hippho.databinding.ItemHomeBinding
+import com.anliban.team.hippho.ui.home.HomeUiModel
+import com.anliban.team.hippho.ui.home.HomeViewModel
+import com.anliban.team.hippho.util.dp2px
 
 class HomeAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: HomeViewModel
+    private val action: (HomeUiModel) -> Unit
 ) : ListAdapter<HomeUiModel, HomeViewHolder>(
     HomeListDiffUtil
 ) {
+
+    private val recyclerViewPool = RecyclerView.RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val binding = ItemHomeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return HomeViewHolder(
             binding,
             lifecycleOwner,
-            viewModel
+            recyclerViewPool
         )
     }
 
@@ -32,11 +37,25 @@ class HomeAdapter(
 class HomeViewHolder(
     private val binding: ItemHomeBinding,
     private val lifecycleOwner: LifecycleOwner,
-    private val viewModel: HomeViewModel
+    private val recyclerViewPool: RecyclerView.RecycledViewPool
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    private companion object {
+        private const val IMAGE_MARGIN = 4f
+    }
+
     fun onBind(item: HomeUiModel) {
-        binding.item = item.item[0]
+
+        binding.recyclerView.apply {
+            adapter =
+                ImageHorizontalAdapter(
+                    lifecycleOwner
+                )
+            addItemDecoration(ImageMarginItemDecoration(dp2px(itemView.context, IMAGE_MARGIN)))
+            setRecycledViewPool(recyclerViewPool)
+        }
+
+        binding.item = item
         binding.lifecycleOwner = lifecycleOwner
         binding.executePendingBindings()
     }
