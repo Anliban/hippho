@@ -9,7 +9,7 @@ import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 
 
-fun compareHistogram(context: Context,filename1: String?, filename2: String?): Int {
+fun compareHistogram(context: Context, filename1: String?, filename2: String?): Int {
     var retVal = 0
     val startTime = System.currentTimeMillis()
     val appPath: String = context.applicationContext.filesDir.absolutePath
