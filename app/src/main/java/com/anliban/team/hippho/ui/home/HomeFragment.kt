@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentHomeBinding
 import com.anliban.team.hippho.ui.home.adapter.HomeAdapter
@@ -24,6 +25,11 @@ class HomeFragment : DaggerFragment() {
 
     private val viewModel by viewModel { viewModelFactory.create(HomeViewModel::class.java) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requestPermissions()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,17 +41,15 @@ class HomeFragment : DaggerFragment() {
         }
 
         binding.recyclerView.apply {
-            adapter = HomeAdapter(viewLifecycleOwner) {
-                navigateToDetail(it)
+            adapter = HomeAdapter(viewLifecycleOwner) { uiModel, sharedElement ->
+                findNavController().navigate(
+                    HomeFragmentDirections.actionToDetail(uiModel)
+                    //, FragmentNavigatorExtras(sharedElement)
+                )
             }
         }
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requestPermissions()
     }
 
     private fun requestPermissions() {
@@ -58,7 +62,6 @@ class HomeFragment : DaggerFragment() {
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
                     requireActivity().finish()
                 }
-
             })
             .setRationaleMessage(resources.getString(R.string.permission_string2))
             .setDeniedMessage(resources.getString(R.string.permission_string1))
@@ -68,9 +71,5 @@ class HomeFragment : DaggerFragment() {
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
             .check()
-    }
-
-    private fun navigateToDetail(item: HomeUiModel) {
-
     }
 }

@@ -2,4 +2,6 @@
     <string name="app_name">Hippho</string>
     <string name="permission_string1">[설정] > [권한] 에서 권한을 허용할 수 있습니다.</string>
     <string name="permission_string2">사진 및 파일을 저장하기 위하여 접근 권한이 필요합니다.</string>
+
+    <string name="home_transition_name">homeTransitionImage</string>
 </resources>

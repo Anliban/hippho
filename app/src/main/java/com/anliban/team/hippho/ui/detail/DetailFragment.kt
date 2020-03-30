@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.anliban.team.hippho.databinding.FragmentDetailBinding
 import com.anliban.team.hippho.util.viewModel
 import dagger.android.support.DaggerFragment
@@ -19,6 +20,14 @@ class DetailFragment : DaggerFragment() {
 
     private val viewModel by viewModel { viewModelFactory.create(DetailViewModel::class.java) }
 
+    private val args: DetailFragmentArgs by navArgs()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //sharedElementEnterTransition = TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,5 +39,11 @@ class DetailFragment : DaggerFragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.setSharedElement(args.uiModel)
     }
 }

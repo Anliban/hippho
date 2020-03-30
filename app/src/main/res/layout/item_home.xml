@@ -10,50 +10,58 @@
             type="com.anliban.team.hippho.ui.home.HomeUiModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="12dp" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="12dp" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="12dp" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/item_main_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textSize="12sp"
-            app:bindDate="@{item.date}"
-            app:layout_constraintStart_toEndOf="@id/guide_start"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="2020.02.02" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="12dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="@dimen/match_constraint"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"
-            android:orientation="horizontal"
-            android:scrollbars="none"
-            app:bindHomeImages="@{item.item}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guide_end"
-            app:layout_constraintStart_toEndOf="@id/guide_start"
-            app:layout_constraintTop_toBottomOf="@id/item_main_date"
-            tools:itemCount="5"
-            tools:listitem="@layout/item_image_horizontal" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/item_main_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textSize="12sp"
+                app:bindDate="@{item.date}"
+                app:layout_constraintStart_toEndOf="@id/guide_start"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2020.02.02" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="@dimen/match_constraint"
+                android:layout_height="60dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal"
+                android:scrollbars="none"
+                app:bindHomeImages="@{item.item}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guide_end"
+                app:layout_constraintStart_toEndOf="@id/guide_start"
+                app:layout_constraintTop_toBottomOf="@id/item_main_date"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_image_horizontal" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
 </layout>

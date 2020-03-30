@@ -14,13 +14,11 @@
 
         <action
             android:id="@+id/action_to_detail"
-            app:destination="@id/detailFragment">
-
-            <argument
-                android:name="uiModel"
-                app:argType="com.anliban.team.hippho.ui.home.HomeUiModel"
-                app:nullable="false" />
-        </action>
+            app:destination="@id/detailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
     </fragment>
 
@@ -28,5 +26,11 @@
         android:id="@+id/detailFragment"
         android:name="com.anliban.team.hippho.ui.detail.DetailFragment"
         android:label="DetailFragment"
-        tools:layout="@layout/fragment_detail" />
+        tools:layout="@layout/fragment_detail">
+
+        <argument
+            android:name="uiModel"
+            app:argType="com.anliban.team.hippho.ui.home.HomeUiModel"
+            app:nullable="false" />
+    </fragment>
 </navigation>

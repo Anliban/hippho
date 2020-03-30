@@ -27,5 +27,18 @@
             app:homeItems="@{viewModel.imageList}"
             tools:listitem="@layout/item_home" />
 
+        <ImageView
+            android:id="@+id/aaa"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:srcCompat="@mipmap/ic_launcher"
+            android:transitionName="@string/home_transition_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,6 +1,8 @@
 package com.anliban.team.hippho.util
 
 import android.content.Context
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -46,6 +48,17 @@ inline fun <reified T : ViewModel> Fragment.activityViewModel(
             }
         }
     }
+}
+
+inline fun <T : View> T.afterMeasure(crossinline f: T.() -> Unit) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            if (measuredWidth > 0 && measuredHeight > 0) {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+                f()
+            }
+        }
+    })
 }
 
 fun dp2px(context: Context, dpValue: Float): Int {
