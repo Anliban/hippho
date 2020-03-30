@@ -1,4 +1,4 @@
-package com.anliban.team.hippho.ui
+package com.anliban.team.hippho.ui.home
 
 import android.annotation.SuppressLint
 import android.widget.TextView
@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Date
 
-@BindingAdapter("mainItems")
-fun bindMainItems(recyclerView: RecyclerView, items: List<MainUiModel>?) {
+@BindingAdapter("homeItems")
+fun bindHomeItems(recyclerView: RecyclerView, items: List<HomeUiModel>?) {
     items?.let {
-        (recyclerView.adapter as MainAdapter).submitList(it)
+        (recyclerView.adapter as HomeAdapter).submitList(it)
     }
 }
 

@@ -1,4 +1,4 @@
-package com.anliban.team.hippho.ui
+package com.anliban.team.hippho.ui.home
 
 import android.Manifest
 import android.os.Bundle
@@ -7,34 +7,37 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.anliban.team.hippho.R
-import com.anliban.team.hippho.databinding.FragmentMainBinding
-import com.anliban.team.hippho.util.activityViewModel
+import com.anliban.team.hippho.databinding.FragmentHomeBinding
+import com.anliban.team.hippho.util.viewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class MainFragment : DaggerFragment() {
+class HomeFragment : DaggerFragment() {
 
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentHomeBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel by activityViewModel { viewModelFactory.create(MainViewModel::class.java) }
+    private val viewModel by viewModel { viewModelFactory.create(HomeViewModel::class.java) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMainBinding.inflate(inflater, container, false).apply {
-            viewModel = this@MainFragment.viewModel
+        binding = FragmentHomeBinding.inflate(inflater, container, false).apply {
+            viewModel = this@HomeFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
         binding.recyclerView.apply {
-            adapter = MainAdapter(viewLifecycleOwner, viewModel)
+            adapter = HomeAdapter(
+                viewLifecycleOwner,
+                viewModel
+            )
         }
 
         return binding.root
@@ -42,10 +45,10 @@ class MainFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setPermission()
+        requestPermissions()
     }
 
-    private fun setPermission() {
+    private fun requestPermissions() {
         TedPermission.with(requireContext())
             .setPermissionListener(object : PermissionListener {
                 override fun onPermissionGranted() {

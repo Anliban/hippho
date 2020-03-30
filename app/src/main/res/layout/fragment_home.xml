@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.anliban.team.hippho.ui.MainViewModel" />
+            type="com.anliban.team.hippho.ui.home.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,8 +24,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:mainItems="@{viewModel.imageList}"
-            tools:listitem="@layout/item_main" />
+            app:homeItems="@{viewModel.imageList}"
+            tools:listitem="@layout/item_home" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

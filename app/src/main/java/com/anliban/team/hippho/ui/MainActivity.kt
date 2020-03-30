@@ -13,6 +13,7 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.ActivityMainBinding
+import com.anliban.team.hippho.ui.home.HomeViewModel
 import com.anliban.team.hippho.util.activityViewModel
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
