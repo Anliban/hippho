@@ -3,13 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/mainFragment"
+    tools:ignore="UnusedNavigation">
 
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.anliban.team.hippho.ui.home.HomeFragment"
         android:label="MainFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_to_detail"
+            app:destination="@id/detailFragment">
+
+            <argument
+                android:name="uiModel"
+                app:argType="com.anliban.team.hippho.ui.home.HomeUiModel"
+                app:nullable="false" />
+        </action>
+
+    </fragment>
 
     <fragment
         android:id="@+id/detailFragment"
