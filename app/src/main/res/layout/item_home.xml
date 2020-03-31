@@ -45,7 +45,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="2020.02.02" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.anliban.team.hippho.widget.DisableTouchRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="@dimen/match_constraint"
                 android:layout_height="60dp"

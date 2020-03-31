@@ -52,9 +52,7 @@ class HomeViewHolder(
 
     fun onBind(item: HomeUiModel) {
         binding.recyclerView.apply {
-            adapter = ImageHorizontalAdapter(lifecycleOwner) {
-                navigateToDetail(item)
-            }
+            adapter = ImageHorizontalAdapter(lifecycleOwner)
             addItemDecoration(ImageMarginItemDecoration(dp2px(itemView.context, IMAGE_MARGIN)))
             setRecycledViewPool(recyclerViewPool)
         }

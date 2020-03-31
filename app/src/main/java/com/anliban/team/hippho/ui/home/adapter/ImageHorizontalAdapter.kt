@@ -10,8 +10,7 @@ import com.anliban.team.hippho.databinding.ItemImageHorizontalBinding
 import com.anliban.team.hippho.model.Image
 
 class ImageHorizontalAdapter(
-    private val lifecycleOwner: LifecycleOwner,
-    private val action: () -> Unit
+    private val lifecycleOwner: LifecycleOwner
 ) : ListAdapter<Image, ImageHorizontalViewHolder>(
     ImageDiffUtil
 ) {
@@ -22,11 +21,7 @@ class ImageHorizontalAdapter(
         return ImageHorizontalViewHolder(
             binding,
             lifecycleOwner
-        ).apply {
-            itemView.setOnClickListener {
-                action()
-            }
-        }
+        )
     }
 
     override fun onBindViewHolder(holder: ImageHorizontalViewHolder, position: Int) {
