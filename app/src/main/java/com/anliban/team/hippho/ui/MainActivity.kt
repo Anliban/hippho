@@ -65,7 +65,7 @@ class MainActivity : DaggerAppCompatActivity() {
         when (destination.id) {
             R.id.mainFragment -> {
                 supportActionBar?.title = "Hippo"
-                binding.toolbar.navigationIcon = null
+                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_home_black_24dp)
             }
             R.id.detailFragment -> {
                 supportActionBar?.title = "Detail"
