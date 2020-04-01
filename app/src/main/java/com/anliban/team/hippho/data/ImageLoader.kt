@@ -21,15 +21,6 @@ interface ImageLoader {
 
 class ImageLoaderImpl(private val context: Context) : ImageLoader {
 
-    /*
-    * for (string in result) {
-            Log.i("${this.localClassName} | getImages", "|$string|")
-        }
-        val image1 = result[0]
-        val image2 = result[1]
-        Log.d("@@@compare", "::: ${compareHistogram(applicationContext, image1, image2)}")
-    *
-    * */
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun getImages(): Flow<List<Image>> {
         return flow {

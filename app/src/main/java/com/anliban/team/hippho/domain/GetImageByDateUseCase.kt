@@ -15,10 +15,13 @@ class GetImageByDateUseCase(
     override fun execute(parameters: Unit): Flow<List<HomeUiModel>> {
         return imageLoader.getImages()
             .map { images ->
-                images.groupBy {
-                    it.date.midNight()
-                }.map {
-                    HomeUiModel(it.key, it.value)
+                val groupByDate = images.groupBy { it.date.midNight() }
+
+                groupByDate.flatMap {
+                    imageSimilarFinder.calculate(it.key, it.value)
+                        .map { result ->
+                            HomeUiModel(result.first, result.second)
+                        }
                 }
             }
     }
