@@ -5,6 +5,7 @@ import com.anliban.team.hippho.ui.MainActivity
 import com.anliban.team.hippho.ui.MainActivityModule
 import com.anliban.team.hippho.ui.detail.DetailModule
 import com.anliban.team.hippho.ui.home.HomeModule
+import com.anliban.team.hippho.ui.info.InfoModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -17,7 +18,8 @@ abstract class ActivityBindingModule {
         modules = [
             MainActivityModule::class,
             DetailModule::class,
-            HomeModule::class
+            HomeModule::class,
+            InfoModule::class
         ]
     )
     internal abstract fun mainActivity(): MainActivity
