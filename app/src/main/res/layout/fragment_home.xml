@@ -25,7 +25,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:homeItems="@{viewModel.imageList}"
-            tools:listitem="@layout/item_home" />
+            tools:listitem="@layout/item_home_content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

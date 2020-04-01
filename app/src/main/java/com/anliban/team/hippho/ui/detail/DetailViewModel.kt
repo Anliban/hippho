@@ -2,15 +2,13 @@ package com.anliban.team.hippho.ui.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.anliban.team.hippho.model.Image
-import com.anliban.team.hippho.ui.home.HomeUiModel
 import javax.inject.Inject
 
 class DetailViewModel @Inject constructor() : ViewModel() {
 
-    private val items = MediatorLiveData<HomeUiModel>()
+    private val items = MediatorLiveData<List<Image>>()
 
     private val _thumbNail = MediatorLiveData<Image>()
     val thumbNail: LiveData<Image>
@@ -18,12 +16,12 @@ class DetailViewModel @Inject constructor() : ViewModel() {
 
     init {
         _thumbNail.addSource(items) {
-            _thumbNail.value = it.item[0]
+            _thumbNail.value = it[0]
         }
     }
 
-    fun setSharedElement(uiModel: HomeUiModel) {
-        items.value = uiModel
+    fun setSharedElement(images: List<Image>) {
+        items.value = images
     }
 
 }

@@ -44,6 +44,6 @@ class DetailFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.setSharedElement(args.uiModel)
+        viewModel.setSharedElement(args.images.toList())
     }
 }

@@ -29,8 +29,8 @@
         tools:layout="@layout/fragment_detail">
 
         <argument
-            android:name="uiModel"
-            app:argType="com.anliban.team.hippho.ui.home.HomeUiModel"
+            android:name="images"
+            app:argType="com.anliban.team.hippho.model.Image[]"
             app:nullable="false" />
     </fragment>
 </navigation>

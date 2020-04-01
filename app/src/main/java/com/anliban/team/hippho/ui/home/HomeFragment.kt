@@ -43,7 +43,7 @@ class HomeFragment : DaggerFragment() {
         binding.recyclerView.apply {
             adapter = HomeAdapter(viewLifecycleOwner) { uiModel, sharedElement ->
                 findNavController().navigate(
-                    HomeFragmentDirections.actionToDetail(uiModel)
+                    HomeFragmentDirections.actionToDetail(uiModel.data.toTypedArray())
                     //, FragmentNavigatorExtras(sharedElement)
                 )
             }

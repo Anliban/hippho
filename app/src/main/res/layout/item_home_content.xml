@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.anliban.team.hippho.ui.home.HomeUiModel" />
+            type="com.anliban.team.hippho.ui.home.HomeListContent" />
     </data>
 
     <FrameLayout
@@ -34,17 +34,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_end="12dp" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/item_main_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="12sp"
-                app:bindDate="@{item.date}"
-                app:layout_constraintStart_toEndOf="@id/guide_start"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="2020.02.02" />
-
             <com.anliban.team.hippho.widget.DisableTouchRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="@dimen/match_constraint"
@@ -52,12 +41,12 @@
                 android:layout_marginBottom="12dp"
                 android:orientation="horizontal"
                 android:scrollbars="none"
-                app:bindHomeImages="@{item.item}"
+                app:bindHomeImages="@{item.data}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/guide_end"
                 app:layout_constraintStart_toEndOf="@id/guide_start"
-                app:layout_constraintTop_toBottomOf="@id/item_main_date"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:itemCount="5"
                 tools:listitem="@layout/item_image_horizontal" />
 
