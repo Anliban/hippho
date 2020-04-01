@@ -3,18 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment"
+    app:startDestination="@id/homeFragment"
     tools:ignore="UnusedNavigation">
 
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/homeFragment"
         android:name="com.anliban.team.hippho.ui.home.HomeFragment"
-        android:label="MainFragment"
+        android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
 
         <action
             android:id="@+id/action_to_detail"
             app:destination="@id/detailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/action_to_info"
+            app:destination="@id/infoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
+            android:id="@+id/action_to_setting"
+            app:destination="@id/settingFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
@@ -33,4 +49,17 @@
             app:argType="com.anliban.team.hippho.model.Image[]"
             app:nullable="false" />
     </fragment>
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.anliban.team.hippho.ui.setting.SettingFragment"
+        android:label="SettingFragment"
+        tools:layout="@layout/fragment_setting" />
+
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.anliban.team.hippho.ui.info.InfoFragment"
+        android:label="InfoFragment"
+        tools:layout="@layout/fragment_info" />
+
 </navigation>

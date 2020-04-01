@@ -63,13 +63,21 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private fun onDestinationChanged(destination: NavDestination) {
         when (destination.id) {
-            R.id.mainFragment -> {
+            R.id.homeFragment -> {
                 supportActionBar?.title = "Hippo"
-                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_home_black_24dp)
+                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_info_black_24dp)
             }
             R.id.detailFragment -> {
                 supportActionBar?.title = "Detail"
                 binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_arrow_back_black_24dp)
+            }
+            R.id.infoFragment -> {
+                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_arrow_back_black_24dp)
+                supportActionBar?.title = "Info"
+            }
+            R.id.settingFragment -> {
+                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_arrow_back_black_24dp)
+                supportActionBar?.title = "Setting"
             }
         }
     }

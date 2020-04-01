@@ -3,10 +3,15 @@ package com.anliban.team.hippho.ui.home
 import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentHomeBinding
 import com.anliban.team.hippho.ui.home.adapter.HomeAdapter
@@ -39,6 +44,7 @@ class HomeFragment : DaggerFragment() {
             viewModel = this@HomeFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+        setHasOptionsMenu(true)
 
         binding.recyclerView.apply {
             adapter = HomeAdapter(viewLifecycleOwner) { uiModel, sharedElement ->
@@ -50,6 +56,21 @@ class HomeFragment : DaggerFragment() {
         }
 
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.home, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.setting -> {
+                findNavController().navigate(HomeFragmentDirections.actionToSetting())
+                return false
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun requestPermissions() {
