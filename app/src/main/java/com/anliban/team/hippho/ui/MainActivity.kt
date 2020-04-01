@@ -2,20 +2,24 @@ package com.anliban.team.hippho.ui
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.core.view.GravityCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.ActivityMainBinding
-import com.anliban.team.hippho.ui.home.HomeViewModel
 import com.anliban.team.hippho.util.activityViewModel
+import com.anliban.team.hippho.util.consume
 import dagger.android.support.DaggerAppCompatActivity
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
@@ -44,11 +48,33 @@ class MainActivity : DaggerAppCompatActivity() {
             lifecycleOwner = this@MainActivity
         }
 
+        binding.navigationView.doOnApplyWindowInsets { navigationView, insets, initialState ->
+            navigationView.updatePadding(
+                top = initialState.paddings.top + insets.systemWindowInsetTop
+            )
+        }
+
+        binding.navigationView.setNavigationItemSelectedListener {
+            consume {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                when (it.itemId) {
+                    R.id.home -> navController.popBackStack(R.id.home, false)
+                    R.id.setting -> navController.navigate(R.id.action_to_setting)
+                    R.id.info -> navController.navigate(R.id.action_to_info)
+                    else -> NavigationUI.onNavDestinationSelected(it, navController)
+                }
+            }
+        }
+
         binding.toolbar.doOnLayout {
             invalidateOptionsMenu()
         }
 
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        /* binding.navigationView.setNavigationItemSelectedListener { item ->
+             handleNavigation(item.itemId)
+         }*/
+
+        val appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
 
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
 
@@ -61,11 +87,19 @@ class MainActivity : DaggerAppCompatActivity() {
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 
+    override fun onBackPressed() {
+        if (binding.drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            return
+        }
+        super.onBackPressed()
+    }
+
     private fun onDestinationChanged(destination: NavDestination) {
         when (destination.id) {
             R.id.homeFragment -> {
                 supportActionBar?.title = "Hippo"
-                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_info_black_24dp)
+                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_menu_black_24dp)
             }
             R.id.detailFragment -> {
                 supportActionBar?.title = "Detail"

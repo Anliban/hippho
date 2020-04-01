@@ -20,22 +20,6 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
-        <action
-            android:id="@+id/action_to_info"
-            app:destination="@id/infoFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-
-        <action
-            android:id="@+id/action_to_setting"
-            app:destination="@id/settingFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-
     </fragment>
 
     <fragment
@@ -61,5 +45,22 @@
         android:name="com.anliban.team.hippho.ui.info.InfoFragment"
         android:label="InfoFragment"
         tools:layout="@layout/fragment_info" />
+
+    <!-- Global Action -->
+    <action
+        android:id="@+id/action_to_info"
+        app:destination="@id/infoFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+    <action
+        android:id="@+id/action_to_setting"
+        app:destination="@id/settingFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
 </navigation>
