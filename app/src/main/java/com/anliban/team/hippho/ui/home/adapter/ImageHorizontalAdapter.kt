@@ -47,6 +47,6 @@ val ImageDiffUtil = object : DiffUtil.ItemCallback<Image>() {
     }
 
     override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean {
-        return oldItem.path == newItem.path
+        return oldItem.fileName == newItem.fileName
     }
 }

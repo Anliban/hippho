@@ -73,12 +73,12 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
                     )
                     val absolutePathOfImage: String = cursor.getString(data)
 
-                    Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / ab : $absolutePathOfImage ")
+                    Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / ab : $absolutePathOfImage / path : $contentUri ")
                     val image = Image(
                         id = id,
-                        path = contentUri.toString(),
+                        fileName = contentUri.toString(),
                         date = dateTaken,
-                        name = displayName,
+                        contentUri = displayName,
                         absolutePath = absolutePathOfImage
                     )
                     fileList.add(image)

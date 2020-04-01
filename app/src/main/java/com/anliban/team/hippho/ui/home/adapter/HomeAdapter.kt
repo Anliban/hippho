@@ -75,7 +75,7 @@ class HomeViewHolder(
             val imageView = binding.recyclerView.getChildAt(0) as AppCompatImageView?
 
             imageView?.let {
-                return@run it to image.path
+                return@run it to image.fileName
             }
         } ?: throw IllegalArgumentException("Can not find ImageView")
     }
