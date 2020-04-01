@@ -9,5 +9,6 @@ data class Image(
     val id: Long,
     val path: String,
     val date: Date,
-    val name: String
+    val name: String,
+    val absolutePath: String
 ): Parcelable

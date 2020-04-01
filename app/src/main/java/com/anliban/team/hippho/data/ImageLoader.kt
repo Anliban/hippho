@@ -7,8 +7,10 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import com.anliban.team.hippho.model.Image
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -35,7 +37,8 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
             val projection = arrayOf(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_TAKEN
+                MediaStore.Images.Media.DATE_TAKEN,
+                MediaStore.Images.Media.DATA
             )
 
             val sortOrder = "${MediaStore.Images.Media.DATE_TAKEN} DESC"
@@ -58,6 +61,8 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
                 val displayNameColumn =
                     it.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
                 val dateTakenColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
+                val data: Int = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+
                 while (it.moveToNext()) {
                     val id = it.getLong(idColumn)
                     val dateTaken = Date(cursor.getLong(dateTakenColumn))
@@ -66,19 +71,22 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         id.toString()
                     )
-                    Timber.i("Name : $displayName / Date : $dateTaken / ID : $id")
+                    val absolutePathOfImage: String = cursor.getString(data)
+
+                    Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / ab : $absolutePathOfImage ")
                     val image = Image(
                         id = id,
                         path = contentUri.toString(),
                         date = dateTaken,
-                        name = displayName
+                        name = displayName,
+                        absolutePath = absolutePathOfImage
                     )
                     fileList.add(image)
                 }
             }
 
             emit(fileList)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     @SuppressLint("SimpleDateFormat")
