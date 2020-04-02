@@ -15,17 +15,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/thumbnail_recycler_view"
             android:layout_width="@dimen/match_constraint"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:bindImage="@{viewModel.thumbNail.fileName}"
+            android:layout_height="@dimen/match_constraint"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            android:splitMotionEvents="false"
+            app:bindDetailImages="@{viewModel.thumbnails}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent=".4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:moveToItem="@{viewModel.moveToThumbnail}"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_image_horizontal" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/second_recycler_view"
+            android:layout_width="@dimen/match_constraint"
+            android:layout_height="60dp"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:splitMotionEvents="false"
+            app:bindDetailImages="@{viewModel.secondLists}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/thumbnail_recycler_view"
+            tools:listitem="@layout/item_image_horizontal" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

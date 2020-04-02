@@ -8,8 +8,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentDetailBinding
+import com.anliban.team.hippho.ui.home.adapter.HomeListContentViewHolder
+import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
+import com.anliban.team.hippho.util.dp2px
 import com.anliban.team.hippho.util.viewModel
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -63,6 +67,19 @@ class DetailFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val thumbnailSnapHelper = LinearSnapHelper()
+
+        binding.thumbnailRecyclerView.apply {
+            adapter = DetailImageAdapter(viewLifecycleOwner, viewModel, DetailListType.Thumb)
+        }
+
+        thumbnailSnapHelper.attachToRecyclerView(binding.thumbnailRecyclerView)
+
+        binding.secondRecyclerView.apply {
+            adapter = DetailImageAdapter(viewLifecycleOwner, viewModel, DetailListType.Second)
+            addItemDecoration(ImageMarginItemDecoration(dp2px(requireContext(), 4f)))
+        }
 
         viewModel.setSharedElement(args.images.toList())
     }
