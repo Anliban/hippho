@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentDetailBinding
@@ -19,12 +18,14 @@ class DetailFragment : DaggerFragment() {
 
     private lateinit var binding: FragmentDetailBinding
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel by viewModel { viewModelFactory.create(DetailViewModel::class.java) }
-
     private val args: DetailFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var viewModelFactory: DetailViewModel.Factory
+
+    private val viewModel: DetailViewModel by viewModel {
+        viewModelFactory.create()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

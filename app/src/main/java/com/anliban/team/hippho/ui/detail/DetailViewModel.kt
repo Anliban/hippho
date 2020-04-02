@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.anliban.team.hippho.model.Image
-import javax.inject.Inject
+import com.squareup.inject.assisted.AssistedInject
 
-class DetailViewModel @Inject constructor() : ViewModel() {
+class DetailViewModel @AssistedInject constructor() : ViewModel() {
 
     private val items = MediatorLiveData<List<Image>>()
 
@@ -24,4 +24,8 @@ class DetailViewModel @Inject constructor() : ViewModel() {
         items.value = images
     }
 
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(): DetailViewModel
+    }
 }
