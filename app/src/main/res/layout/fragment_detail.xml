@@ -39,7 +39,7 @@
             android:layout_marginTop="6dp"
             android:orientation="horizontal"
             android:overScrollMode="never"
-            android:scrollbars="none"
+            android:scrollbars="horizontal"
             android:splitMotionEvents="false"
             app:bindDetailImages="@{viewModel.secondLists}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
