@@ -55,6 +55,10 @@ class ImageSimilarFinder {
             } else {
                 result.add(date to diffResult.toList())
                 diffResult.clear()
+
+                if (targetPosition == latestIndex) {
+                    diffResult.add(image)
+                }
             }
         }
 
