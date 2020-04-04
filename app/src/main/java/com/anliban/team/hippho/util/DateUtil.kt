@@ -1,5 +1,7 @@
 package com.anliban.team.hippho.util
 
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
 import java.util.*
 
 fun Date.midNight(): Date {
@@ -11,4 +13,11 @@ fun Date.midNight(): Date {
         set(Calendar.MILLISECOND, 0)
     }
     return calendar.time
+}
+
+@SuppressLint("SimpleDateFormat")
+fun dateToTimestamp(day: Int, month: Int, year: Int): Long {
+    return SimpleDateFormat("dd.MM.yyyy").let { formatter ->
+        formatter.parse("$day.$month.$year")?.time ?: 0
+    }
 }
