@@ -1,13 +1,19 @@
 package com.anliban.team.hippho.core
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.anliban.team.hippho.model.Image
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfFloat
 import org.opencv.core.MatOfInt
-import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import timber.log.Timber
 import java.util.Date
@@ -19,7 +25,12 @@ import java.util.Date
 
 private typealias CalculateResult = Pair<Date, List<Image>>
 
-class ImageSimilarFinder {
+@RequiresApi(Build.VERSION_CODES.P)
+class ImageSimilarFinder(context: Context) {
+
+    private val contentResolver by lazy {
+        context.contentResolver
+    }
 
     init {
         System.loadLibrary(LIB_NAME)
@@ -48,7 +59,7 @@ class ImageSimilarFinder {
             }
 
             val target = images[targetPosition]
-            val isMatched = compareTo(image.absolutePath, target.absolutePath)
+            val isMatched = compareTo(image.contentUri, target.contentUri)
 
             if (isMatched) {
                 diffResult.add(target)
@@ -72,11 +83,12 @@ class ImageSimilarFinder {
      *  @return 두개의 이미지가 같은 이미지인지를 나타내는 Boolean 값
      *
      * */
+    @RequiresApi(Build.VERSION_CODES.P)
     private suspend fun compareTo(origin: String, target: String): Boolean {
         return withContext(Dispatchers.IO) {
             // Load images to compare
-            val img1: Mat = Imgcodecs.imread(origin, Imgcodecs.IMREAD_COLOR)
-            val img2: Mat = Imgcodecs.imread(target, Imgcodecs.IMREAD_COLOR)
+            val img1: Mat = getBitmap(origin).toMat()
+            val img2: Mat = getBitmap(target).toMat()
             val hsvImg1 = Mat()
             val hsvImg2 = Mat()
 
@@ -141,6 +153,24 @@ class ImageSimilarFinder {
             Timber.i("Matched Count is $count")
 
             count >= 3
+        }
+    }
+
+    private fun getBitmap(path: String): Bitmap {
+        return ImageDecoder.decodeBitmap(
+            ImageDecoder.createSource(
+                contentResolver,
+                Uri.parse(path)
+            )
+        )
+    }
+
+    private suspend fun Bitmap.toMat(): Mat {
+        return withContext(Dispatchers.IO) {
+            val mat = Mat()
+            val bitmap = this@toMat.copy(Bitmap.Config.ARGB_8888, true)
+            Utils.bitmapToMat(bitmap, mat)
+            mat
         }
     }
 

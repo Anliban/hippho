@@ -2,6 +2,8 @@ package com.anliban.team.hippho.di.module
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.anliban.team.hippho.HipphoApp
 import com.anliban.team.hippho.core.ImageSimilarFinder
 import com.anliban.team.hippho.data.ImageLoader
@@ -22,9 +24,10 @@ class AppModule {
     @Provides
     fun provideApplication(): Application = HipphoApp()
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @Provides
     fun provideImageLoader(context: Context): ImageLoader = ImageLoaderImpl(context)
 
     @Provides
-    fun provideImageSimilarFinder(): ImageSimilarFinder = ImageSimilarFinder()
+    fun provideImageSimilarFinder(context: Context): ImageSimilarFinder = ImageSimilarFinder(context)
 }
