@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentDetailBinding
-import com.anliban.team.hippho.ui.home.adapter.HomeListContentViewHolder
 import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
 import com.anliban.team.hippho.util.dp2px
 import com.anliban.team.hippho.util.viewModel
@@ -28,7 +27,7 @@ class DetailFragment : DaggerFragment() {
     lateinit var viewModelFactory: DetailViewModel.Factory
 
     private val viewModel: DetailViewModel by viewModel {
-        viewModelFactory.create()
+        viewModelFactory.create(args.images)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +80,6 @@ class DetailFragment : DaggerFragment() {
             addItemDecoration(ImageMarginItemDecoration(dp2px(requireContext(), 4f)))
         }
 
-        viewModel.setSharedElement(args.images.toList())
+    //    viewModel.setSharedElement(args.images.toList())
     }
 }

@@ -19,6 +19,7 @@ import java.util.Date
 
 interface ImageLoader {
     fun getImages(option: ImageQueryOption): Flow<List<Image>>
+    fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>>
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -38,13 +39,29 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
 
     private val sortOrder = "${MediaStore.Images.Media.DATE_TAKEN} DESC"
 
-
     override fun getImages(option: ImageQueryOption): Flow<List<Image>> {
         val cursor = context.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
             getQuerySelection(option),
             getQuerySelectionArgs(),
+            sortOrder
+        )
+
+        return flow {
+            val images = cursor.search()
+            emit(images)
+        }
+            .onCompletion { cursor?.close() }
+            .flowOn(Dispatchers.IO)
+    }
+
+    override fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>> {
+        val cursor = context.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            getQuerySelection(option) + getIdsSelectionOption(ids),
+            getQuerySelectionArgs(getStringIds(ids)),
             sortOrder
         )
 
@@ -94,20 +111,40 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     }
 
     private fun getQuerySelection(queryOption: ImageQueryOption): String {
-        val selection = when (queryOption) {
-            ImageQueryOption.DATE -> MediaStore.Images.Media.DATE_TAKEN
-            ImageQueryOption.ID -> MediaStore.Images.Media._ID
+        return when (queryOption) {
+            ImageQueryOption.DATE -> "${MediaStore.Images.Media.DATE_TAKEN} >= ?"
+            ImageQueryOption.ID -> "${MediaStore.Images.Media._ID} IN "
+        }
+    }
+
+    private fun getIdsSelectionOption(ids: List<Long>?): String {
+        ids ?: return ""
+
+        var result = "("
+        ids.forEachIndexed { position, _ ->
+            result += "?"
+
+            if (position != ids.lastIndex) {
+                result += ","
+            }
+            if (position == ids.lastIndex) {
+                result += ")"
+            }
         }
 
-        return "$selection >= ?"
+        return result
     }
 
     private fun getQuerySelectionArgs(args: Array<String>? = null): Array<String> {
         return args ?: defaultSelectionArgs
     }
 
+    private fun getStringIds(ids: List<Long>?): Array<String>? {
+        return ids?.let {
+            ids.map { it.toString() }.toTypedArray()
+        }
+    }
 }
-
 
 enum class ImageQueryOption {
     DATE, ID

@@ -2,7 +2,7 @@ package com.anliban.team.hippho.domain
 
 import com.anliban.team.hippho.core.ImageSimilarFinder
 import com.anliban.team.hippho.data.ImageLoader
-import com.anliban.team.hippho.data.ImageQueryOption
+import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.ui.home.HomeListContent
 import com.anliban.team.hippho.ui.home.HomeListHeader
 import com.anliban.team.hippho.ui.home.HomeUiModel
@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.map
 class GetImageByDateUseCase(
     private val imageLoader: ImageLoader,
     private val imageSimilarFinder: ImageSimilarFinder
-) : FlowUseCase<ImageQueryOption, List<HomeUiModel>>() {
+) : FlowUseCase<GetImageRequestParameters, List<HomeUiModel>>() {
 
-    override fun execute(parameters: ImageQueryOption): Flow<List<HomeUiModel>> {
-        return imageLoader.getImages(parameters)
+    override fun execute(parameters: GetImageRequestParameters): Flow<List<HomeUiModel>> {
+        return imageLoader.getImages(parameters.option)
             .map { images ->
                 val groupByDate = images.groupBy { it.date.midNight() }
                 groupByDate

@@ -4,13 +4,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.anliban.team.hippho.data.ImageQueryOption
+import com.anliban.team.hippho.domain.GetImageByIdUseCase
+import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.model.Event
 import com.anliban.team.hippho.model.Image
+import com.anliban.team.hippho.model.Result
+import com.anliban.team.hippho.model.successOr
+import com.anliban.team.hippho.util.toLoadingState
+import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class DetailViewModel @AssistedInject constructor() : ViewModel() {
+class DetailViewModel @AssistedInject constructor(
+    private val getImageByDateUseCase: GetImageByIdUseCase,
+    @Assisted private val ids: LongArray
+) : ViewModel() {
 
-    private val items = MediatorLiveData<List<Image>>()
+    private val detailResult = MediatorLiveData<Result<List<Image>>>()
 
     private val _thumbnails = MediatorLiveData<List<Image>>()
     val thumbnails: LiveData<List<Image>>
@@ -25,17 +38,26 @@ class DetailViewModel @AssistedInject constructor() : ViewModel() {
         get() = _moveToThumbnail
 
     init {
-        _thumbnails.addSource(items) {
-            _thumbnails.value = it
+        _thumbnails.addSource(detailResult) {
+            _thumbnails.value = it.successOr(null)
         }
 
-        _secondLists.addSource(items) {
-            _secondLists.value = it
+        _secondLists.addSource(detailResult) {
+            _secondLists.value = it.successOr(null)
         }
-    }
 
-    fun setSharedElement(images: List<Image>) {
-        items.value = images
+        val request = GetImageRequestParameters(
+            option = ImageQueryOption.ID,
+            ids = ids.toList()
+        )
+
+        viewModelScope.launch {
+            getImageByDateUseCase.execute(request)
+                .toLoadingState()
+                .collect {
+                    detailResult.value = it
+                }
+        }
     }
 
     fun clickToSecondItem(image: Image) {
@@ -47,6 +69,6 @@ class DetailViewModel @AssistedInject constructor() : ViewModel() {
 
     @AssistedInject.Factory
     interface Factory {
-        fun create(): DetailViewModel
+        fun create(ids: LongArray): DetailViewModel
     }
 }

@@ -14,4 +14,9 @@ class DomainModule {
         imageSimilarFinder: ImageSimilarFinder
     ): GetImageByDateUseCase =
         GetImageByDateUseCase(imageLoader, imageSimilarFinder)
+
+    @Provides
+    fun provideGetImageByIdUseCase(
+        imageLoader: ImageLoader
+    ): GetImageByIdUseCase = GetImageByIdUseCase(imageLoader)
 }
