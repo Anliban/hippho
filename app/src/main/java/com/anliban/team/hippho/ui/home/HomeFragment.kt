@@ -40,9 +40,9 @@ class HomeFragment : DaggerFragment() {
             lifecycleOwner = viewLifecycleOwner
         }
         binding.recyclerView.apply {
-            adapter = HomeAdapter(viewLifecycleOwner) { uiModel, sharedElement ->
+            adapter = HomeAdapter(viewLifecycleOwner) { ids, sharedElement ->
                 findNavController().navigate(
-                    HomeFragmentDirections.actionToDetail(uiModel.data.toTypedArray())
+                    HomeFragmentDirections.actionToDetail(ids.toLongArray())
                     //, FragmentNavigatorExtras(sharedElement)
                 )
             }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.anliban.team.hippho.databinding.ItemHomeContentBinding
 import com.anliban.team.hippho.databinding.ItemHomeHeaderBinding
 import com.anliban.team.hippho.model.Image
+import com.anliban.team.hippho.model.mapper.getIds
 import com.anliban.team.hippho.ui.home.HomeListContent
 import com.anliban.team.hippho.ui.home.HomeListHeader
 import com.anliban.team.hippho.ui.home.HomeUiModel
@@ -20,7 +21,7 @@ import java.lang.IllegalStateException
 
 class HomeAdapter(
     private val lifecycleOwner: LifecycleOwner,
-    private val action: (HomeListContent, Pair<View, String>) -> Unit
+    private val action: (List<Long>, Pair<View, String>) -> Unit
 ) : ListAdapter<HomeUiModel, HomeViewHolder>(
     HomeListDiffUtil
 ) {
@@ -88,7 +89,7 @@ class HomeListContentViewHolder(
     private val binding: ItemHomeContentBinding,
     private val lifecycleOwner: LifecycleOwner,
     private val recyclerViewPool: RecyclerView.RecycledViewPool,
-    private val action: (HomeListContent, Pair<View, String>) -> Unit
+    private val action: (List<Long>, Pair<View, String>) -> Unit
 ) : HomeViewHolder(binding.root) {
 
     private companion object {
@@ -112,7 +113,7 @@ class HomeListContentViewHolder(
     }
 
     private fun navigateToDetail(uiModel: HomeListContent) {
-        action(uiModel, createSharedElements(uiModel.data[0]))
+        action(uiModel.data.getIds(), createSharedElements(uiModel.data[0]))
     }
 
     private fun createSharedElements(image: Image): Pair<View, String> {
