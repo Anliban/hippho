@@ -18,7 +18,7 @@ import timber.log.Timber
 import java.util.Date
 
 interface ImageLoader {
-    fun getImages(): Flow<List<Image>>
+    fun getImages(option: ImageQueryOption): Flow<List<Image>>
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -39,12 +39,11 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     private val sortOrder = "${MediaStore.Images.Media.DATE_TAKEN} DESC"
 
 
-    override fun getImages(): Flow<List<Image>> {
-        val queryOption = ImageQueryOption.DATE
+    override fun getImages(option: ImageQueryOption): Flow<List<Image>> {
         val cursor = context.contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
-            getQuerySelection(queryOption),
+            getQuerySelection(option),
             getQuerySelectionArgs(),
             sortOrder
         )

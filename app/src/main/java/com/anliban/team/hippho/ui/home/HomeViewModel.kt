@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anliban.team.hippho.data.ImageQueryOption
 import com.anliban.team.hippho.domain.GetImageByDateUseCase
 import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.model.successOr
@@ -43,7 +44,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadImages() {
         viewModelScope.launch {
-            getImageByDateUseCase.execute(Unit)
+            getImageByDateUseCase.execute(ImageQueryOption.DATE)
                 .toLoadingState()
                 .collect {
                     homeUiResult.value = it

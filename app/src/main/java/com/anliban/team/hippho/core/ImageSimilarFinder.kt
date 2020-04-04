@@ -25,7 +25,6 @@ import java.util.Date
 
 private typealias CalculateResult = Pair<Date, List<Image>>
 
-@RequiresApi(Build.VERSION_CODES.P)
 class ImageSimilarFinder(context: Context) {
 
     private val contentResolver by lazy {
@@ -156,6 +155,7 @@ class ImageSimilarFinder(context: Context) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun getBitmap(path: String): Bitmap {
         return ImageDecoder.decodeBitmap(
             ImageDecoder.createSource(
