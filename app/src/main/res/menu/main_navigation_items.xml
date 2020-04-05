@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <group
+        android:id="@+id/group_primary"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/home"
+            android:checkable="true"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home"
+            tools:checked="true" />
+
+    </group>
+    <group
+        android:id="@+id/group_secondary"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/info"
+            android:checkable="true"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="Info" />
+
+        <item
+            android:id="@+id/setting"
+            android:checkable="true"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Setting" />
+    </group>
+</menu>
