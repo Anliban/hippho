@@ -79,9 +79,9 @@ class MainActivity : DaggerAppCompatActivity() {
             invalidateOptionsMenu()
         }
 
-        /* binding.navigationView.setNavigationItemSelectedListener { item ->
-             handleNavigation(item.itemId)
-         }*/
+        if (savedInstanceState == null) {
+            binding.navigationView.setCheckedItem(R.id.home)
+        }
 
         val appBarConfiguration = AppBarConfiguration(TOP_LEVEL_DESTINATION, binding.drawerLayout)
 
