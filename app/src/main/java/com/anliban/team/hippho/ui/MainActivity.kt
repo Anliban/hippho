@@ -6,6 +6,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -23,6 +24,14 @@ import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 
 class MainActivity : DaggerAppCompatActivity() {
+
+    private companion object {
+        private val TOP_LEVEL_DESTINATION = setOf(
+            R.id.homeFragment,
+            R.id.settingFragment,
+            R.id.infoFragment
+        )
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -74,11 +83,12 @@ class MainActivity : DaggerAppCompatActivity() {
              handleNavigation(item.itemId)
          }*/
 
-        val appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
+        val appBarConfiguration = AppBarConfiguration(TOP_LEVEL_DESTINATION, binding.drawerLayout)
 
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            onDrawerLockMode(destination)
             onDestinationChanged(destination)
         }
     }
@@ -114,5 +124,15 @@ class MainActivity : DaggerAppCompatActivity() {
                 supportActionBar?.title = "Setting"
             }
         }
+    }
+
+    private fun onDrawerLockMode(destination: NavDestination) {
+        val isTopLevelDestination = TOP_LEVEL_DESTINATION.contains(destination.id)
+        val lockMode = if (isTopLevelDestination) {
+            DrawerLayout.LOCK_MODE_UNLOCKED
+        } else {
+            DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+        }
+        binding.drawerLayout.setDrawerLockMode(lockMode)
     }
 }
