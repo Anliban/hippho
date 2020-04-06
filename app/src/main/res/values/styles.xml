@@ -3,11 +3,11 @@
     <style name="Theme.Hippho.Button" parent="Widget.MaterialComponents.Button" />
 
     <style name="Theme.Hippho.Button.IconOutLine" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon">
-        <item name="strokeColor">@color/colorPrimaryDark</item>
+        <item name="strokeColor">@color/colorPrimary</item>
         <item name="strokeWidth">1dp</item>
-        <item name="rippleColor">?attr/colorPrimaryDark</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="iconTint">@color/colorPrimaryDark</item>
+        <item name="rippleColor">@color/color_secondary_dim</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="iconTint">@color/colorPrimary</item>
     </style>
 
 </resources>
