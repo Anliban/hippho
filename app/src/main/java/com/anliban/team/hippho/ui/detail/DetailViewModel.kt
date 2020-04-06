@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
 import com.anliban.team.hippho.domain.GetImageByIdUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
+import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.model.Event
 import com.anliban.team.hippho.model.Image
@@ -20,17 +22,18 @@ import kotlinx.coroutines.launch
 
 class DetailViewModel @AssistedInject constructor(
     private val getImageByDateUseCase: GetImageByIdUseCase,
+    private val switchImagePositionUseCase: SwitchImagePositionUseCase,
     @Assisted private val ids: LongArray
 ) : ViewModel() {
 
     private val detailResult = MediatorLiveData<Result<List<Image>>>()
 
-    private val _thumbnails = MediatorLiveData<List<Image>>()
-    val thumbnails: LiveData<List<Image>>
+    private val _thumbnails = MediatorLiveData<List<DetailThumbnail>>()
+    val thumbnails: LiveData<List<DetailThumbnail>>
         get() = _thumbnails
 
-    private val _secondLists = MediatorLiveData<List<Image>>()
-    val secondLists: LiveData<List<Image>>
+    private val _secondLists = MediatorLiveData<List<DetailImage>>()
+    val secondLists: LiveData<List<DetailImage>>
         get() = _secondLists
 
     private val _moveToThumbnail = MutableLiveData<Event<Int>>()
@@ -39,11 +42,11 @@ class DetailViewModel @AssistedInject constructor(
 
     init {
         _thumbnails.addSource(detailResult) {
-            _thumbnails.value = it.successOr(null)
+            _thumbnails.value = it.successOr(null)?.mapDetailUiModel()
         }
 
         _secondLists.addSource(detailResult) {
-            _secondLists.value = it.successOr(null)
+            _secondLists.value = it.successOr(null)?.mapDetailImageList()
         }
 
         val request = GetImageRequestParameters(
@@ -60,10 +63,16 @@ class DetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun clickToSecondItem(image: Image) {
-        val thumbnails = requireNotNull(_thumbnails.value)
-        val position = thumbnails.indexOf(image)
+    fun clickToSecondItem(item: DetailUiModel) {
+        require(item is DetailImage)
+        val request = SwitchImagePositionRequestParameters(
+            model = item,
+            items = _secondLists.value
+        )
+        switchImagePositionUseCase(request, _secondLists)
 
+        val thumbnails = requireNotNull(_thumbnails.value)
+        val position = thumbnails.indexOf(thumbnails.find { it.image == item.image })
         _moveToThumbnail.value = Event(position)
     }
 

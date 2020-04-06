@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentDetailBinding
 import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
@@ -78,8 +79,10 @@ class DetailFragment : DaggerFragment() {
         binding.secondRecyclerView.apply {
             adapter = DetailImageAdapter(viewLifecycleOwner, viewModel, DetailListType.Second)
             addItemDecoration(ImageMarginItemDecoration(dp2px(requireContext(), 4f)))
+            setHasFixedSize(true)
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
-    //    viewModel.setSharedElement(args.images.toList())
+        //    viewModel.setSharedElement(args.images.toList())
     }
 }

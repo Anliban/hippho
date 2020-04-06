@@ -5,24 +5,48 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="item"
-            type="com.anliban.team.hippho.model.Image" />
+            type="com.anliban.team.hippho.ui.detail.DetailImage" />
 
         <variable
             name="viewModel"
             type="com.anliban.team.hippho.ui.detail.DetailViewModel" />
     </data>
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:onClick="@{() -> viewModel.clickToSecondItem(item)}"
-        android:scaleType="centerCrop"
-        app:bindImage="@{item.contentUri}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guide_start"
-        app:layout_constraintTop_toBottomOf="@id/item_main_date"
-        tools:srcCompat="@tools:sample/avatars" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_height="90dp"
+        tools:layout_width="90dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image"
+            android:layout_width="@dimen/detail_small_image_size"
+            android:layout_height="@dimen/detail_small_image_size"
+            android:onClick="@{() -> viewModel.clickToSecondItem(item)}"
+            android:scaleType="centerCrop"
+            app:bindImage="@{item.image.contentUri}"
+            app:layout_constraintBottom_toTopOf="@id/position_dot"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginBottom="20dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <View
+            android:id="@+id/position_dot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_margin="6dp"
+            android:background="@drawable/ic_dot"
+            android:visibility="@{item.selected ? View.VISIBLE : View.GONE , default = visible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
