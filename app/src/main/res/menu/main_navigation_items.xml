@@ -6,7 +6,7 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/home"
+            android:id="@id/homeFragment"
             android:checkable="true"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="Home"
@@ -18,13 +18,13 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/info"
+            android:id="@id/infoFragment"
             android:checkable="true"
             android:icon="@drawable/ic_info_black_24dp"
             android:title="Info" />
 
         <item
-            android:id="@+id/setting"
+            android:id="@id/settingFragment"
             android:checkable="true"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="Setting" />

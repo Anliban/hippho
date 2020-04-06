@@ -10,9 +10,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.anliban.team.hippho.R
@@ -64,23 +64,23 @@ class MainActivity : DaggerAppCompatActivity() {
         }
 
         binding.navigationView.setNavigationItemSelectedListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            if (navController.currentDestination?.id == it.itemId) return@setNavigationItemSelectedListener false
             consume {
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
-                when (it.itemId) {
-                    R.id.home -> navController.popBackStack(R.id.home, false)
-                    R.id.setting -> navController.navigate(R.id.action_to_setting)
-                    R.id.info -> navController.navigate(R.id.action_to_info)
-                    else -> NavigationUI.onNavDestinationSelected(it, navController)
-                }
+                val builder = NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .setPopUpTo(R.id.homeFragment, false)
+                    .setEnterAnim(R.anim.nav_default_enter_anim)
+                    .setExitAnim(R.anim.nav_default_exit_anim)
+                    .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+                    .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+                val options = builder.build()
+                navController.navigate(it.itemId, null, options)
             }
         }
 
         binding.toolbar.doOnLayout {
             invalidateOptionsMenu()
-        }
-
-        if (savedInstanceState == null) {
-            binding.navigationView.setCheckedItem(R.id.home)
         }
 
         val appBarConfiguration = AppBarConfiguration(TOP_LEVEL_DESTINATION, binding.drawerLayout)
@@ -106,6 +106,8 @@ class MainActivity : DaggerAppCompatActivity() {
     }
 
     private fun onDestinationChanged(destination: NavDestination) {
+        binding.navigationView.menu.findItem(destination.id)?.isChecked = true
+
         when (destination.id) {
             R.id.homeFragment -> {
                 supportActionBar?.title = "Hippo"
@@ -116,11 +118,11 @@ class MainActivity : DaggerAppCompatActivity() {
                 binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_arrow_back_black_24dp)
             }
             R.id.infoFragment -> {
-                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_arrow_back_black_24dp)
+                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_menu_black_24dp)
                 supportActionBar?.title = "Info"
             }
             R.id.settingFragment -> {
-                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_arrow_back_black_24dp)
+                binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_menu_black_24dp)
                 supportActionBar?.title = "Setting"
             }
         }
