@@ -1,6 +1,7 @@
 package com.anliban.team.hippho.ui.home
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -64,11 +65,21 @@ class HomeFragment : DaggerFragment() {
             })
             .setRationaleMessage(resources.getString(R.string.permission_string2))
             .setDeniedMessage(resources.getString(R.string.permission_string1))
-            .setPermissions(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
+            .setPermissions(*getRequestPermission())
             .check()
+    }
+
+    private fun getRequestPermission(): Array<String> {
+        val result = arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            result + Manifest.permission.ACCESS_MEDIA_LOCATION
+
+        }
+
+        return result
     }
 }

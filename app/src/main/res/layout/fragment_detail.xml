@@ -48,5 +48,17 @@
             app:layout_constraintTop_toBottomOf="@id/thumbnail_recycler_view"
             tools:listitem="@layout/item_image_horizontal" />
 
+        <include
+            android:id="@+id/include_detail_controller"
+            layout="@layout/include_detail_controller"
+            android:layout_width="@dimen/match_constraint"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/second_recycler_view"
+            app:viewModel="@{viewModel}" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

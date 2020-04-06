@@ -3,6 +3,7 @@ package com.anliban.team.hippho.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
 import com.anliban.team.hippho.domain.GetImageByDateUseCase
@@ -24,9 +25,7 @@ class HomeViewModel @Inject constructor(
     val imageList: LiveData<List<HomeUiModel>>
         get() = _imageList
 
-    private val _loadingProgress = MediatorLiveData<Boolean>()
-    val loadingProgress: LiveData<Boolean>
-        get() = _loadingProgress
+    val swipeRefreshing: LiveData<Boolean>
 
     init {
 
@@ -34,11 +33,9 @@ class HomeViewModel @Inject constructor(
             _imageList.value = result.successOr(null)
         }
 
-        _loadingProgress.addSource(homeUiResult) {
-            _loadingProgress.value = it is Result.Loading
+        swipeRefreshing = homeUiResult.map {
+            it is Result.Loading
         }
-
-        _loadingProgress.value = true
     }
 
     fun loadImages() {
@@ -49,5 +46,9 @@ class HomeViewModel @Inject constructor(
                     homeUiResult.value = it
                 }
         }
+    }
+
+    fun onSwipeRefresh() {
+        loadImages()
     }
 }
