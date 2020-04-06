@@ -42,7 +42,7 @@
 
 # Built application files
 *.apk
-*.aar
+#*.aar
 *.ap_
 *.aab
 
@@ -100,5 +100,3 @@ lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
-
-opencv/build/*
