@@ -12,7 +12,7 @@ data class DetailThumbnail(
 
 data class DetailImage(
     override val image: Image,
-    var isSelected: Boolean = false,
+    val isSelected: Boolean = false,
     val isScaled: Boolean = false
 ) : DetailUiModel()
 

@@ -3,12 +3,15 @@ package com.anliban.team.hippho.ui.detail
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.anliban.team.hippho.databinding.ItemDetailThumbnailBinding
 import com.anliban.team.hippho.databinding.ItemDetailSecondBinding
+import com.anliban.team.hippho.util.scaleRevert
+import com.anliban.team.hippho.util.scaleStart
 import java.lang.IllegalStateException
 
 class DetailImageAdapter(
@@ -86,6 +89,16 @@ class DetailSecondViewHolder(
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
+
+        if (item.isScaled) {
+            scaleStart(binding.image) {
+                binding.filter.isVisible = true
+            }
+        } else {
+            scaleRevert(binding.image) {
+                binding.filter.isVisible = false
+            }
+        }
     }
 }
 
@@ -99,11 +112,6 @@ val DetailImageDiffUtil = object : DiffUtil.ItemCallback<DetailUiModel>() {
     }
 
     override fun areContentsTheSame(oldItem: DetailUiModel, newItem: DetailUiModel): Boolean {
-        return when {
-            oldItem is DetailImage && newItem is DetailImage -> {
-                oldItem.isSelected == newItem.isSelected && oldItem.isScaled == newItem.isScaled
-            }
-            else -> oldItem == newItem
-        }
+        return oldItem == newItem
     }
 }

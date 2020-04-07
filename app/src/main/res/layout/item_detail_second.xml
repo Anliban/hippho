@@ -18,9 +18,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_height="90dp"
-        tools:layout_width="90dp">
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/filter"
+            android:layout_width="@dimen/detail_small_image_size"
+            android:layout_height="@dimen/detail_small_image_size"
+            android:alpha=".15"
+            android:background="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image"
@@ -29,24 +38,23 @@
             android:onClick="@{() -> viewModel.clickToSecondItem(item)}"
             android:scaleType="centerCrop"
             app:bindImage="@{item.image.contentUri}"
-            app:layout_constraintBottom_toTopOf="@id/position_dot"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginBottom="20dp"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <View
-            android:id="@+id/position_dot"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_margin="6dp"
-            android:background="@drawable/ic_dot"
-            android:visibility="@{item.selected ? View.VISIBLE : View.GONE , default = visible}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+
+        <View
+            android:id="@+id/position_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_dot"
+            android:rotation="180"
+            android:visibility="@{item.selected ? View.VISIBLE : View.GONE , default = visible}"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            app:layout_constraintEnd_toEndOf="@id/image"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
