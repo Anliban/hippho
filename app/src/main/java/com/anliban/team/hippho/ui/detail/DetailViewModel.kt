@@ -51,7 +51,6 @@ class DetailViewModel @AssistedInject constructor(
         }
 
         _secondLists.addSource(detailResult) {
-            
             _secondLists.value = it.successOr(null)?.mapDetailImageList()
         }
 
