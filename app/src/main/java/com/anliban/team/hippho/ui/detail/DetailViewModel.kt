@@ -45,13 +45,34 @@ class DetailViewModel @AssistedInject constructor(
 
     private val clickedId = MediatorLiveData<Long>()
 
+    val organizeImageState = MediatorLiveData<Boolean>()
+    val organizeImagesState = MediatorLiveData<Boolean>()
+
     init {
         _thumbnails.addSource(detailResult) {
             _thumbnails.value = it.successOr(null)?.mapDetailUiModel()
         }
 
         _secondLists.addSource(detailResult) {
-            _secondLists.value = it.successOr(null)?.mapDetailImageList()
+            val images = it.successOr(null)?.mapDetailImageList()
+            clickedId.value = images?.get(0)?.image?.id
+            _secondLists.value = images
+        }
+
+        organizeImageState.addSource(clickedId) { id ->
+            _secondLists.value?.let { images ->
+                organizeImageState.value = images.find { it.image.id == id }?.isScaled
+            }
+        }
+
+        organizeImageState.addSource(secondLists) { images ->
+            clickedId.value?.let { id ->
+                organizeImageState.value = images.find { it.image.id == id }?.isScaled
+            }
+        }
+
+        organizeImagesState.addSource(secondLists) { images ->
+            organizeImagesState.value = images?.all { it.isScaled }
         }
 
         val request = GetImageRequestParameters(
@@ -83,7 +104,7 @@ class DetailViewModel @AssistedInject constructor(
         _moveToThumbnail.value = Event(position)
     }
 
-    fun clickToSelected() {
+    fun selectImage() {
         val request = ScaleImageAnimRequestParameters(
             clickedId = clickedId,
             items = _secondLists.value
@@ -92,7 +113,8 @@ class DetailViewModel @AssistedInject constructor(
         scaleImageAnimUseCase(request, _secondLists)
     }
 
-    fun clickToUnSelected() {
+    fun selectImages() {
+
     }
 
     @AssistedInject.Factory
