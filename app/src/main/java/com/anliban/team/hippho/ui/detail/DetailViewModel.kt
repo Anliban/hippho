@@ -107,14 +107,22 @@ class DetailViewModel @AssistedInject constructor(
     fun selectImage() {
         val request = ScaleImageAnimRequestParameters(
             clickedId = clickedId,
-            items = _secondLists.value
+            items = _secondLists.value,
+            type = OrganizeImage.Single
         )
 
         scaleImageAnimUseCase(request, _secondLists)
     }
 
     fun selectImages() {
+        val request = ScaleImageAnimRequestParameters(
+            clickedId = clickedId,
+            items = _secondLists.value,
+            type = OrganizeImage.All,
+            allState = organizeImagesState.value
+        )
 
+        scaleImageAnimUseCase(request, _secondLists)
     }
 
     @AssistedInject.Factory
