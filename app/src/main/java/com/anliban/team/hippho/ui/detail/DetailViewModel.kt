@@ -48,6 +48,10 @@ class DetailViewModel @AssistedInject constructor(
     val organizeImageState = MediatorLiveData<Boolean>()
     val organizeImagesState = MediatorLiveData<Boolean>()
 
+    private val _navigateToHome = MutableLiveData<Event<Unit>>()
+    val navigateToHome: LiveData<Event<Unit>>
+        get() = _navigateToHome
+
     init {
         _thumbnails.addSource(detailResult) {
             _thumbnails.value = it.successOr(null)?.mapDetailUiModel()
@@ -123,6 +127,12 @@ class DetailViewModel @AssistedInject constructor(
         )
 
         scaleImageAnimUseCase(request, _secondLists)
+    }
+
+    fun organizeImage() {
+        viewModelScope.launch {
+            _navigateToHome.value = Event(Unit)
+        }
     }
 
     @AssistedInject.Factory

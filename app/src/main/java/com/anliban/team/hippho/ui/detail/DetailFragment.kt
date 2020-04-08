@@ -7,11 +7,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentDetailBinding
+import com.anliban.team.hippho.model.EventObserver
 import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
 import com.anliban.team.hippho.util.dp2px
 import com.anliban.team.hippho.util.viewModel
@@ -58,7 +60,7 @@ class DetailFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.check -> {
-
+                viewModel.organizeImage()
                 return false
             }
         }
@@ -82,6 +84,10 @@ class DetailFragment : DaggerFragment() {
             setHasFixedSize(true)
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
+
+        viewModel.navigateToHome.observe(viewLifecycleOwner, EventObserver {
+            findNavController().popBackStack()
+        })
 
         //    viewModel.setSharedElement(args.images.toList())
     }
