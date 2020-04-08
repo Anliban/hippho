@@ -18,7 +18,6 @@ class SwitchImagePositionUseCase :
 
         val result = parameters.items?.toMutableList() ?: mutableListOf()
 
-
         clickedId.value?.let { id ->
             val image = result.find { it.image.id == id } ?: return@let
             val position = result.indexOf(image)

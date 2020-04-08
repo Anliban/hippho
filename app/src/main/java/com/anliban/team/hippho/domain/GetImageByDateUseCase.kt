@@ -21,7 +21,6 @@ class GetImageByDateUseCase(
                         val content = HomeListContent(it.value)
                         listOf(header) + content
                     }
-
             }
     }
 }

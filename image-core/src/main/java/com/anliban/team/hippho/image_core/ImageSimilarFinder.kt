@@ -74,7 +74,6 @@ class ImageSimilarFinder(context: Context) {
         return result
     }
 
-
     /**
      *  @param origin 선택한 이미지
      *  @param target 비교대상 이미지

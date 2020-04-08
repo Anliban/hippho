@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.anliban.team.hippho.databinding.FragmentInfoBinding
 import com.anliban.team.hippho.databinding.FragmentSettingBinding
 import com.anliban.team.hippho.util.viewModel
 import dagger.android.support.DaggerFragment
@@ -32,5 +31,4 @@ class SettingFragment : DaggerFragment() {
 
         return binding.root
     }
-
 }

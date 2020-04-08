@@ -2,7 +2,8 @@ package com.anliban.team.hippho.util
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 fun Date.midNight(): Date {
     val calendar = Calendar.getInstance().apply {
