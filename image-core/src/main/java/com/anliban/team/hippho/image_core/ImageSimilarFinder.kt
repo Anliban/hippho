@@ -1,4 +1,4 @@
-package com.anliban.team.hippho.core
+package com.anliban.team.hippho.image_core
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -15,7 +15,6 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfFloat
 import org.opencv.core.MatOfInt
 import org.opencv.imgproc.Imgproc
-import timber.log.Timber
 import java.util.Date
 
 /**
@@ -148,8 +147,6 @@ class ImageSimilarFinder(context: Context) {
             if (result3 < 0.3) {
                 count++
             }
-
-            Timber.i("Matched Count is $count")
 
             count >= 3
         }

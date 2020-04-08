@@ -3,20 +3,22 @@ package com.anliban.team.hippho.ui.detail
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.anliban.team.hippho.databinding.ItemDetailThumbnailBinding
 import com.anliban.team.hippho.databinding.ItemDetailSecondBinding
-import com.anliban.team.hippho.model.Image
+import com.anliban.team.hippho.util.scaleRevert
+import com.anliban.team.hippho.util.scaleStart
 import java.lang.IllegalStateException
 
 class DetailImageAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: DetailViewModel,
     private val listType: DetailListType
-) : ListAdapter<Image, DetailImageViewHolder<Image>>(
+) : ListAdapter<DetailUiModel, DetailImageViewHolder<DetailUiModel>>(
     DetailImageDiffUtil
 ) {
 
@@ -35,7 +37,7 @@ class DetailImageAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DetailImageViewHolder<Image> {
+    ): DetailImageViewHolder<DetailUiModel> {
         return when (viewType) {
             VIEW_TYPE_THUMBS -> {
                 val binding = ItemDetailThumbnailBinding.inflate(
@@ -58,7 +60,7 @@ class DetailImageAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: DetailImageViewHolder<Image>, position: Int) {
+    override fun onBindViewHolder(holder: DetailImageViewHolder<DetailUiModel>, position: Int) {
         holder.onBind(getItem(position))
     }
 }
@@ -66,10 +68,10 @@ class DetailImageAdapter(
 class DetailThumbNailViewHolder(
     private val binding: ItemDetailThumbnailBinding,
     private val viewLifecycleOwner: LifecycleOwner
-) : DetailImageViewHolder<Image>(binding.root) {
+) : DetailImageViewHolder<DetailUiModel>(binding.root) {
 
-    override fun onBind(item: Image) {
-        binding.item = item
+    override fun onBind(item: DetailUiModel) {
+        binding.item = item.image
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
     }
@@ -79,26 +81,37 @@ class DetailSecondViewHolder(
     private val binding: ItemDetailSecondBinding,
     private val viewLifecycleOwner: LifecycleOwner,
     private val viewModel: DetailViewModel
-) : DetailImageViewHolder<Image>(binding.root) {
+) : DetailImageViewHolder<DetailUiModel>(binding.root) {
 
-    override fun onBind(item: Image) {
+    override fun onBind(item: DetailUiModel) {
+        require(item is DetailImage) { "Invalid Type" }
         binding.item = item
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.executePendingBindings()
+
+        if (item.isScaled) {
+            scaleStart(binding.image) {
+                binding.filter.isVisible = true
+            }
+        } else {
+            scaleRevert(binding.image) {
+                binding.filter.isVisible = false
+            }
+        }
     }
 }
 
-abstract class DetailImageViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
+sealed class DetailImageViewHolder<T>(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun onBind(item: T)
 }
 
-val DetailImageDiffUtil = object : DiffUtil.ItemCallback<Image>() {
-    override fun areItemsTheSame(oldItem: Image, newItem: Image): Boolean {
-        return oldItem.id == newItem.id
+val DetailImageDiffUtil = object : DiffUtil.ItemCallback<DetailUiModel>() {
+    override fun areItemsTheSame(oldItem: DetailUiModel, newItem: DetailUiModel): Boolean {
+        return oldItem.image.id == newItem.image.id
     }
 
-    override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean {
+    override fun areContentsTheSame(oldItem: DetailUiModel, newItem: DetailUiModel): Boolean {
         return oldItem == newItem
     }
 }

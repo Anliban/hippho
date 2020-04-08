@@ -35,10 +35,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/second_recycler_view"
             android:layout_width="@dimen/match_constraint"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:orientation="horizontal"
             android:overScrollMode="never"
+            android:padding="5dp"
             android:scrollbars="horizontal"
             android:splitMotionEvents="false"
             app:bindDetailImages="@{viewModel.secondLists}"
@@ -46,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/thumbnail_recycler_view"
-            tools:listitem="@layout/item_image_horizontal" />
+            tools:listitem="@layout/item_detail_second" />
 
         <include
             android:id="@+id/include_detail_controller"
@@ -58,7 +59,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/second_recycler_view"
             app:viewModel="@{viewModel}" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
