@@ -9,7 +9,6 @@ data class HomeListHeader(
     val date: Date
 ) : HomeUiModel()
 
-
 data class HomeListContent(
     val data: List<Image>
 ) : HomeUiModel()

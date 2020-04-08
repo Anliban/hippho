@@ -44,7 +44,7 @@ class HomeFragment : DaggerFragment() {
             adapter = HomeAdapter(viewLifecycleOwner) { ids, sharedElement ->
                 findNavController().navigate(
                     HomeFragmentDirections.actionToDetail(ids.toLongArray())
-                    //, FragmentNavigatorExtras(sharedElement)
+                    // , FragmentNavigatorExtras(sharedElement)
                 )
             }
         }
@@ -77,7 +77,6 @@ class HomeFragment : DaggerFragment() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             result + Manifest.permission.ACCESS_MEDIA_LOCATION
-
         }
 
         return result

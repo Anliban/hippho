@@ -93,7 +93,6 @@ class DetailViewModel @AssistedInject constructor(
     }
 
     fun clickToUnSelected() {
-
     }
 
     @AssistedInject.Factory
