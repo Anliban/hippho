@@ -64,7 +64,6 @@ class HomeAdapter(
         }
     }
 
-
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         when (val model = getItem(position)) {
             is HomeListHeader -> (holder as HomeListHeaderViewHolder).onBind(model)
@@ -137,5 +136,4 @@ val HomeListDiffUtil = object : DiffUtil.ItemCallback<HomeUiModel>() {
     override fun areContentsTheSame(oldItem: HomeUiModel, newItem: HomeUiModel): Boolean {
         return oldItem == newItem
     }
-
 }

@@ -31,5 +31,4 @@ class InfoFragment : DaggerFragment() {
 
         return binding.root
     }
-
 }

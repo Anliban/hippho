@@ -7,7 +7,6 @@ import com.anliban.team.hippho.ui.detail.DetailImage
 class ScaleImageAnimUseCase :
     UseCase<ScaleImageAnimRequestParameters, List<DetailImage>>() {
 
-
     override fun execute(parameters: ScaleImageAnimRequestParameters): List<DetailImage> {
         val result = parameters.items?.toMutableList() ?: mutableListOf()
         val clickedId = parameters.clickedId

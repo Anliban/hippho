@@ -1,6 +1,5 @@
 package com.anliban.team.hippho.di.module
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
