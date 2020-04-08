@@ -8,9 +8,16 @@ class SwitchImagePositionUseCase :
     UseCase<SwitchImagePositionRequestParameters, List<DetailImage>>() {
 
     override fun execute(parameters: SwitchImagePositionRequestParameters): List<DetailImage> {
-        val result = parameters.items?.toMutableList() ?: mutableListOf()
-        val model = parameters.model
+
         val clickedId = parameters.clickedId
+        val model = parameters.model
+
+        if (clickedId.value == model.image.id) {
+            return parameters.items ?: emptyList()
+        }
+
+        val result = parameters.items?.toMutableList() ?: mutableListOf()
+
 
         clickedId.value?.let { id ->
             val image = result.find { it.image.id == id } ?: return@let
