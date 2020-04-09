@@ -49,6 +49,10 @@ dependencies {
     // inserter
     implementation "dev.chrisbanes:insetter-ktx:0.2.1"
 
+    //Joda-Time
+    implementation "net.danlew:android.joda:$joda_time_version"
+
+
     // Tests
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

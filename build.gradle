@@ -17,6 +17,7 @@ buildscript {
         navigation = '2.3.0-alpha04'
         fragment_version = '1.2.3'
         timber = '4.7.1'
+        joda_time_version = '2.10.3'
     }
     repositories {
         google()
