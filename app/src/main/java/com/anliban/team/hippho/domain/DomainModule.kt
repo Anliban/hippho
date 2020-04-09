@@ -1,5 +1,6 @@
 package com.anliban.team.hippho.domain
 
+import com.anliban.team.hippho.data.ImageLoadHelper
 import com.anliban.team.hippho.data.ImageLoader
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
@@ -11,9 +12,10 @@ class DomainModule {
 
     @Provides
     fun provideGetImageByDateUseCase(
-        imageLoader: ImageLoader
+        imageLoader: ImageLoader,
+        imageLoaderHelper: ImageLoadHelper
     ): GetImageByDateUseCase =
-        GetImageByDateUseCase(imageLoader)
+        GetImageByDateUseCase(imageLoader, imageLoaderHelper)
 
     @Provides
     fun provideGetImageByIdUseCase(
@@ -25,4 +27,7 @@ class DomainModule {
 
     @Provides
     fun provideScaleImageAnimUseCase(): ScaleImageAnimUseCase = ScaleImageAnimUseCase()
+
+    @Provides
+    fun provideImageLoadHelper(): ImageLoadHelper = ImageLoadHelper()
 }
