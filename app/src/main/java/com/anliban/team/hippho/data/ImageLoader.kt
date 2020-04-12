@@ -5,7 +5,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import androidx.annotation.RequiresApi
 import com.anliban.team.hippho.model.Image
 import com.anliban.team.hippho.util.dateToTimestamp
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +21,6 @@ interface ImageLoader {
     fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>>
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 class ImageLoaderImpl(private val context: Context) : ImageLoader {
 
     private val defaultSelectionArgs by lazy {
@@ -31,13 +29,14 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
         )
     }
 
+
     private val projection = arrayOf(
         MediaStore.Images.Media._ID,
         MediaStore.Images.Media.DISPLAY_NAME,
-        MediaStore.Images.Media.DATE_TAKEN
+        DATE_COLUMN
     )
 
-    private val sortOrder = "${MediaStore.Images.Media.DATE_TAKEN} DESC"
+    private val sortOrder = "$DATE_COLUMN DESC"
 
     override fun getImages(option: ImageQueryOption): Flow<List<Image>> {
         val cursor = context.contentResolver.query(
@@ -90,15 +89,21 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     private fun Cursor.getImage(): Image {
         val idColumn = getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         val displayNameColumn = getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-        val dateTakenColumn = getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN)
+        val dateColumn = getColumnIndexOrThrow(Companion.DATE_COLUMN)
 
         val id = getLong(idColumn)
-        val dateTaken = Date(getLong(dateTakenColumn))
         val displayName = getString(displayNameColumn)
         val contentUri = Uri.withAppendedPath(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             id.toString()
         )
+        val dateTaken =
+            if (Companion.DATE_COLUMN == MediaStore.Images.Media.DATE_TAKEN) {
+                Date(getLong(dateColumn))
+            } else {
+                Date(getLong(dateColumn) * 1000)
+            }
+
 
         Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / path : $contentUri ")
 
@@ -112,7 +117,7 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
 
     private fun getQuerySelection(queryOption: ImageQueryOption): String {
         return when (queryOption) {
-            ImageQueryOption.DATE -> "${MediaStore.Images.Media.DATE_TAKEN} >= ?"
+            ImageQueryOption.DATE -> "$DATE_COLUMN >= ?"
             ImageQueryOption.ID -> "${MediaStore.Images.Media._ID} IN "
         }
     }
@@ -143,6 +148,15 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
         return ids?.let {
             ids.map { it.toString() }.toTypedArray()
         }
+    }
+
+    companion object {
+        val DATE_COLUMN =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                MediaStore.Images.Media.DATE_TAKEN
+            } else {
+                MediaStore.Images.Media.DATE_ADDED
+            }
     }
 }
 
