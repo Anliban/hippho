@@ -2,12 +2,9 @@ package com.anliban.team.hippho.di.module
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.anliban.team.hippho.HipphoApp
 import com.anliban.team.hippho.data.ImageLoader
 import com.anliban.team.hippho.data.ImageLoaderImpl
-
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

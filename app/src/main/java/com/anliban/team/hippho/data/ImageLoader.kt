@@ -29,7 +29,6 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
         )
     }
 
-
     private val projection = arrayOf(
         MediaStore.Images.Media._ID,
         MediaStore.Images.Media.DISPLAY_NAME,
@@ -103,7 +102,6 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
             } else {
                 Date(getLong(dateColumn) * 1000)
             }
-
 
         Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / path : $contentUri ")
 
