@@ -1,27 +1,33 @@
 package com.anliban.team.hippho.data
 
+import android.app.RecoverableSecurityException
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import com.anliban.team.hippho.model.Image
+import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.util.dateToTimestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Date
 
-interface ImageLoader {
+interface MediaProvider {
     fun getImages(option: ImageQueryOption): Flow<List<Image>>
     fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>>
+    fun delete(ids: List<Long>): Flow<Result<Unit>>
 }
 
-class ImageLoaderImpl(private val context: Context) : ImageLoader {
+class MediaProviderImpl(context: Context) : MediaProvider {
+
+    private val contentResolver by lazy { context.contentResolver }
 
     private val defaultSelectionArgs by lazy {
         arrayOf(
@@ -38,7 +44,7 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     private val sortOrder = "$DATE_COLUMN DESC"
 
     override fun getImages(option: ImageQueryOption): Flow<List<Image>> {
-        val cursor = context.contentResolver.query(
+        val cursor = contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
             getQuerySelection(option),
@@ -55,7 +61,7 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     }
 
     override fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>> {
-        val cursor = context.contentResolver.query(
+        val cursor = contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
             getQuerySelection(option) + getIdsSelectionOption(ids),
@@ -69,6 +75,31 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
         }
             .onCompletion { cursor?.close() }
             .flowOn(Dispatchers.IO)
+    }
+
+    override fun delete(ids: List<Long>): Flow<Result<Unit>> {
+        return flow {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                try {
+                    remove(ids)
+                    emit(Result.Success(Unit))
+                } catch (e: RecoverableSecurityException) {
+                    emit(Result.Error(e))
+                }
+            } else {
+                remove(ids)
+            }
+        }.flowOn(Dispatchers.IO)
+    }
+
+    private suspend fun remove(ids: List<Long>) {
+        withContext(Dispatchers.IO) {
+            contentResolver.delete(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                getQuerySelection(ImageQueryOption.ID) + getIdsSelectionOption(ids),
+                getQuerySelectionArgs(getStringIds(ids))
+            )
+        }
     }
 
     private suspend fun Cursor?.search(): List<Image> {
