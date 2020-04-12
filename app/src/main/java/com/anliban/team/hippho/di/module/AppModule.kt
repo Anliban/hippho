@@ -23,7 +23,6 @@ class AppModule {
     @Provides
     fun provideApplication(): Application = HipphoApp()
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     @Provides
     fun provideImageLoader(context: Context): ImageLoader = ImageLoaderImpl(context)
 }
