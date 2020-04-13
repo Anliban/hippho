@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentHomeBinding
 import com.anliban.team.hippho.ui.home.adapter.HomeAdapter
@@ -52,6 +54,18 @@ class HomeFragment : DaggerFragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        findNavController().currentBackStackEntry
+            ?.savedStateHandle?.getLiveData<Boolean>(EXT_REFRESH)
+            ?.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    viewModel.onSwipeRefresh()
+                }
+            })
+    }
+
     private fun requestPermissions() {
         TedPermission.with(requireContext())
             .setPermissionListener(object : PermissionListener {
@@ -80,5 +94,9 @@ class HomeFragment : DaggerFragment() {
         }
 
         return result
+    }
+
+    private companion object {
+        private const val EXT_REFRESH = "refreshing"
     }
 }

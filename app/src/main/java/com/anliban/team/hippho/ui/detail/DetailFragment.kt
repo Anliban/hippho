@@ -86,7 +86,14 @@ class DetailFragment : DaggerFragment() {
         }
 
         viewModel.navigateToHome.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
+            findNavController().run {
+                previousBackStackEntry?.savedStateHandle?.set(EXT_REFRESH, true)
+                popBackStack()
+            }
         })
+    }
+
+    private companion object {
+        private const val EXT_REFRESH = "refreshing"
     }
 }
