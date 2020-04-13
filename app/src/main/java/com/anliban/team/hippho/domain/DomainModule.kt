@@ -30,4 +30,7 @@ class DomainModule {
 
     @Provides
     fun provideImageLoadHelper(): ImageLoadHelper = ImageLoadHelper()
+
+    @Provides
+    fun provideDeleteImageUseCase(mediaProvider: MediaProvider): DeleteImageUseCase = DeleteImageUseCase(mediaProvider)
 }

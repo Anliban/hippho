@@ -88,7 +88,5 @@ class DetailFragment : DaggerFragment() {
         viewModel.navigateToHome.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
-
-        //    viewModel.setSharedElement(args.images.toList())
     }
 }

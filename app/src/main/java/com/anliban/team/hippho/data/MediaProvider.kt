@@ -89,7 +89,6 @@ class MediaProviderImpl(context: Context) : MediaProvider {
 
             contentResolver.applyBatch(AUTHORITY, operations)
         }
-
     }
 
     private suspend fun Cursor?.search(): List<Image> {
