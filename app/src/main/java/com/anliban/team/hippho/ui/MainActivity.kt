@@ -1,9 +1,13 @@
 package com.anliban.team.hippho.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -57,10 +61,44 @@ class MainActivity : DaggerAppCompatActivity() {
             lifecycleOwner = this@MainActivity
         }
 
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            binding.root.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        } else {
+            binding.root.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        }
+
+        binding.contentContainer.doOnApplyWindowInsets { view, insets, initialState ->
+            view.updatePadding(
+                left = insets.systemWindowInsetLeft + initialState.paddings.left,
+                right = insets.systemWindowInsetRight + initialState.paddings.right
+            )
+        }
+
         binding.navigationView.doOnApplyWindowInsets { navigationView, insets, initialState ->
             navigationView.updatePadding(
                 top = initialState.paddings.top + insets.systemWindowInsetTop
             )
+        }
+
+        binding.toolbar.doOnApplyWindowInsets { view, insets, initialState ->
+            view.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                topMargin = insets.systemWindowInsetTop + initialState.margins.top
+            }
+        }
+        binding.navigationView.doOnApplyWindowInsets { view, insets, initialState ->
+            view.apply {
+                val leftSpace = insets.systemWindowInsetLeft + initialState.paddings.left
+                updatePadding(left = leftSpace)
+                updateLayoutParams {
+                    if (getWidth() > 0) {
+                        width = measuredWidth + leftSpace
+                    }
+                }
+            }
         }
 
         binding.navigationView.setNavigationItemSelectedListener {
