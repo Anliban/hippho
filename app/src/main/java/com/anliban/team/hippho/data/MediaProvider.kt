@@ -1,20 +1,19 @@
 package com.anliban.team.hippho.data
 
-import android.app.RecoverableSecurityException
+import android.content.ContentProviderOperation
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.MediaStore.AUTHORITY
 import com.anliban.team.hippho.model.Image
-import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.util.dateToTimestamp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Date
@@ -22,7 +21,7 @@ import java.util.Date
 interface MediaProvider {
     fun getImages(option: ImageQueryOption): Flow<List<Image>>
     fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>>
-    fun delete(ids: List<Long>): Flow<Result<Unit>>
+    suspend fun delete(image: List<Image>)
 }
 
 class MediaProviderImpl(context: Context) : MediaProvider {
@@ -77,29 +76,20 @@ class MediaProviderImpl(context: Context) : MediaProvider {
             .flowOn(Dispatchers.IO)
     }
 
-    override fun delete(ids: List<Long>): Flow<Result<Unit>> {
-        return flow {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                try {
-                    remove(ids)
-                    emit(Result.Success(Unit))
-                } catch (e: RecoverableSecurityException) {
-                    emit(Result.Error(e))
-                }
-            } else {
-                remove(ids)
-            }
-        }.flowOn(Dispatchers.IO)
-    }
-
-    private suspend fun remove(ids: List<Long>) {
+    override suspend fun delete(image: List<Image>) {
         withContext(Dispatchers.IO) {
-            contentResolver.delete(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                getQuerySelection(ImageQueryOption.ID) + getIdsSelectionOption(ids),
-                getQuerySelectionArgs(getStringIds(ids))
-            )
+            val operations = arrayListOf<ContentProviderOperation>()
+
+            image.forEach {
+                val providerOperation = ContentProviderOperation.newDelete(Uri.parse(it.contentUri))
+                    .withSelection("${MediaStore.Images.Media._ID} = ?", arrayOf(it.id.toString()))
+                    .build()
+                operations.add(providerOperation)
+            }
+
+            contentResolver.applyBatch(AUTHORITY, operations)
         }
+
     }
 
     private suspend fun Cursor?.search(): List<Image> {
@@ -119,7 +109,7 @@ class MediaProviderImpl(context: Context) : MediaProvider {
     private fun Cursor.getImage(): Image {
         val idColumn = getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         val displayNameColumn = getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-        val dateColumn = getColumnIndexOrThrow(Companion.DATE_COLUMN)
+        val dateColumn = getColumnIndexOrThrow(DATE_COLUMN)
 
         val id = getLong(idColumn)
         val displayName = getString(displayNameColumn)
@@ -128,7 +118,7 @@ class MediaProviderImpl(context: Context) : MediaProvider {
             id.toString()
         )
         val dateTaken =
-            if (Companion.DATE_COLUMN == MediaStore.Images.Media.DATE_TAKEN) {
+            if (DATE_COLUMN == MediaStore.Images.Media.DATE_TAKEN) {
                 Date(getLong(dateColumn))
             } else {
                 Date(getLong(dateColumn) * 1000)
