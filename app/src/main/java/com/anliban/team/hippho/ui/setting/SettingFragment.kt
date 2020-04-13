@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import com.anliban.team.hippho.databinding.FragmentSettingBinding
 import com.anliban.team.hippho.util.viewModel
 import dagger.android.support.DaggerFragment
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 
 class SettingFragment : DaggerFragment() {
@@ -27,6 +29,12 @@ class SettingFragment : DaggerFragment() {
         binding = FragmentSettingBinding.inflate(inflater, container, false).apply {
             viewModel = this@SettingFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
+        }
+
+        binding.root.doOnApplyWindowInsets { view, insets, initialState ->
+            view.updatePadding(
+                bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
+            )
         }
 
         return binding.root

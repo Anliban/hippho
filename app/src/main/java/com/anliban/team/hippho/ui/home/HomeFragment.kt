@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.core.view.updatePadding
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.anliban.team.hippho.util.viewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import dagger.android.support.DaggerFragment
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 
 class HomeFragment : DaggerFragment() {
@@ -47,6 +49,11 @@ class HomeFragment : DaggerFragment() {
                 findNavController().navigate(
                     HomeFragmentDirections.actionToDetail(ids.toLongArray())
                     // , FragmentNavigatorExtras(sharedElement)
+                )
+            }
+            doOnApplyWindowInsets { recyclerView, insets, initialState ->
+                recyclerView.updatePadding(
+                    bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
                 )
             }
         }

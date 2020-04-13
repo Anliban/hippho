@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -18,6 +19,7 @@ import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
 import com.anliban.team.hippho.util.dp2px
 import com.anliban.team.hippho.util.viewModel
 import dagger.android.support.DaggerFragment
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
 
 class DetailFragment : DaggerFragment() {
@@ -48,6 +50,13 @@ class DetailFragment : DaggerFragment() {
             viewModel = this@DetailFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+
+        binding.root.doOnApplyWindowInsets { view, insets, initialState ->
+            view.updatePadding(
+                bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
+            )
+        }
+
         setHasOptionsMenu(true)
         return binding.root
     }
