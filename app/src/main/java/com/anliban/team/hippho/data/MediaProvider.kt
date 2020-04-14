@@ -8,7 +8,9 @@ import android.os.Build
 import android.provider.MediaStore
 import android.provider.MediaStore.AUTHORITY
 import com.anliban.team.hippho.model.Image
+import com.anliban.team.hippho.util.bytesToMegaBytes
 import com.anliban.team.hippho.util.dateToTimestamp
+import com.anliban.team.hippho.util.roundTo2Decimal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -37,7 +39,8 @@ class MediaProviderImpl(context: Context) : MediaProvider {
     private val projection = arrayOf(
         MediaStore.Images.Media._ID,
         MediaStore.Images.Media.DISPLAY_NAME,
-        DATE_COLUMN
+        DATE_COLUMN,
+        MediaStore.Images.Media.SIZE
     )
 
     private val sortOrder = "$DATE_COLUMN DESC"
@@ -109,6 +112,7 @@ class MediaProviderImpl(context: Context) : MediaProvider {
         val idColumn = getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         val displayNameColumn = getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
         val dateColumn = getColumnIndexOrThrow(DATE_COLUMN)
+        val fileSizeColumn = getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
 
         val id = getLong(idColumn)
         val displayName = getString(displayNameColumn)
@@ -122,14 +126,16 @@ class MediaProviderImpl(context: Context) : MediaProvider {
             } else {
                 Date(getLong(dateColumn) * 1000)
             }
+        val fileSize = bytesToMegaBytes(getString(fileSizeColumn)).roundTo2Decimal()
 
-        Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / path : $contentUri ")
+        Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / path : $contentUri / size : $fileSize")
 
         return Image(
             id = id,
             fileName = displayName,
             date = dateTaken,
-            contentUri = contentUri.toString()
+            contentUri = contentUri.toString(),
+            fileSize = fileSize
         )
     }
 
