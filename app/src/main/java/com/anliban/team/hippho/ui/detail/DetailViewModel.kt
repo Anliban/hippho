@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
+import com.anliban.team.hippho.domain.DeleteImageUseCase
 import com.anliban.team.hippho.domain.GetImageByIdUseCase
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimRequestParameters
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
@@ -26,6 +27,7 @@ class DetailViewModel @AssistedInject constructor(
     private val getImageByDateUseCase: GetImageByIdUseCase,
     private val switchImagePositionUseCase: SwitchImagePositionUseCase,
     private val scaleImageAnimUseCase: ScaleImageAnimUseCase,
+    private val deleteImageUseCase: DeleteImageUseCase,
     @Assisted private val ids: LongArray
 ) : ViewModel() {
 
@@ -130,8 +132,15 @@ class DetailViewModel @AssistedInject constructor(
     }
 
     fun organizeImage() {
-        viewModelScope.launch {
-            _navigateToHome.value = Event(Unit)
+        val images = _secondLists.value
+            ?.filter { it.isScaled }
+            ?.map { it.image }
+
+        images?.let {
+            viewModelScope.launch {
+                deleteImageUseCase.execute(it)
+                _navigateToHome.value = Event(Unit)
+            }
         }
     }
 

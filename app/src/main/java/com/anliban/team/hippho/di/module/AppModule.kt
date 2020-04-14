@@ -3,8 +3,8 @@ package com.anliban.team.hippho.di.module
 import android.app.Application
 import android.content.Context
 import com.anliban.team.hippho.HipphoApp
-import com.anliban.team.hippho.data.ImageLoader
-import com.anliban.team.hippho.data.ImageLoaderImpl
+import com.anliban.team.hippho.data.MediaProvider
+import com.anliban.team.hippho.data.MediaProviderImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -21,5 +21,5 @@ class AppModule {
     fun provideApplication(): Application = HipphoApp()
 
     @Provides
-    fun provideImageLoader(context: Context): ImageLoader = ImageLoaderImpl(context)
+    fun provideMediaProvider(context: Context): MediaProvider = MediaProviderImpl(context)
 }

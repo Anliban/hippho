@@ -1,10 +1,12 @@
 package com.anliban.team.hippho.data
 
+import android.content.ContentProviderOperation
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.MediaStore.AUTHORITY
 import com.anliban.team.hippho.model.Image
 import com.anliban.team.hippho.util.dateToTimestamp
 import kotlinx.coroutines.Dispatchers
@@ -16,12 +18,15 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Date
 
-interface ImageLoader {
+interface MediaProvider {
     fun getImages(option: ImageQueryOption): Flow<List<Image>>
     fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>>
+    suspend fun delete(image: List<Image>)
 }
 
-class ImageLoaderImpl(private val context: Context) : ImageLoader {
+class MediaProviderImpl(context: Context) : MediaProvider {
+
+    private val contentResolver by lazy { context.contentResolver }
 
     private val defaultSelectionArgs by lazy {
         arrayOf(
@@ -38,7 +43,7 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     private val sortOrder = "$DATE_COLUMN DESC"
 
     override fun getImages(option: ImageQueryOption): Flow<List<Image>> {
-        val cursor = context.contentResolver.query(
+        val cursor = contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
             getQuerySelection(option),
@@ -55,7 +60,7 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     }
 
     override fun getImages(option: ImageQueryOption, ids: List<Long>?): Flow<List<Image>> {
-        val cursor = context.contentResolver.query(
+        val cursor = contentResolver.query(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             projection,
             getQuerySelection(option) + getIdsSelectionOption(ids),
@@ -69,6 +74,21 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
         }
             .onCompletion { cursor?.close() }
             .flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun delete(image: List<Image>) {
+        withContext(Dispatchers.IO) {
+            val operations = arrayListOf<ContentProviderOperation>()
+
+            image.forEach {
+                val providerOperation = ContentProviderOperation.newDelete(Uri.parse(it.contentUri))
+                    .withSelection("${MediaStore.Images.Media._ID} = ?", arrayOf(it.id.toString()))
+                    .build()
+                operations.add(providerOperation)
+            }
+
+            contentResolver.applyBatch(AUTHORITY, operations)
+        }
     }
 
     private suspend fun Cursor?.search(): List<Image> {
@@ -88,7 +108,7 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
     private fun Cursor.getImage(): Image {
         val idColumn = getColumnIndexOrThrow(MediaStore.Images.Media._ID)
         val displayNameColumn = getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-        val dateColumn = getColumnIndexOrThrow(Companion.DATE_COLUMN)
+        val dateColumn = getColumnIndexOrThrow(DATE_COLUMN)
 
         val id = getLong(idColumn)
         val displayName = getString(displayNameColumn)
@@ -97,7 +117,7 @@ class ImageLoaderImpl(private val context: Context) : ImageLoader {
             id.toString()
         )
         val dateTaken =
-            if (Companion.DATE_COLUMN == MediaStore.Images.Media.DATE_TAKEN) {
+            if (DATE_COLUMN == MediaStore.Images.Media.DATE_TAKEN) {
                 Date(getLong(dateColumn))
             } else {
                 Date(getLong(dateColumn) * 1000)
