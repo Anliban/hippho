@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+apply from: rootProject.file('ktlint.gradle')
+apply from: rootProject.file('gradle/android.gradle')
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine"
+
+    implementation "androidx.arch.core:core-testing:2.1.0"
+
+    implementation 'junit:junit:4.13'
+    implementation "io.mockk:mockk:1.9.3"
+}

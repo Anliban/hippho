@@ -49,4 +49,7 @@ apply from: rootProject.file('gradle/dependencies.gradle')
 dependencies {
     implementation project(":model")
    // implementation project(":image-core")
+
+    // tests
+    testImplementation(project(":test-shared"))
 }
