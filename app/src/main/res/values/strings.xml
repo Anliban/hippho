@@ -9,4 +9,7 @@
     <string name="un_select_image_text">사진 선택 취소</string>
     <string name="select_all_image_text">사진 모두 선택</string>
     <string name="un_select_all_image_text">사진 모두 취소</string>
+
+    <string name="deleted_photo_text">지운 사진 수</string>
+    <string name="deleted_memory_text">비운 용량</string>
 </resources>

@@ -3,4 +3,22 @@
     <dimen name="match_constraint">0dp</dimen>
 
     <dimen name="detail_small_image_size">80dp</dimen>
+
+    <dimen name="space_xx_small">4dp</dimen>
+    <dimen name="space_x_small">8dp</dimen>
+    <dimen name="space_small">12dp</dimen>
+    <dimen name="space_median">16dp</dimen>
+    <dimen name="space_large">18dp</dimen>
+    <dimen name="space_x_large">20dp</dimen>
+    <dimen name="space_xx_large">24dp</dimen>
+    <dimen name="space_xxx_large">28dp</dimen>
+
+    <dimen name="text_xx_small">10sp</dimen>
+    <dimen name="text_x_small">12sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_median">16sp</dimen>
+    <dimen name="text_large">18sp</dimen>
+    <dimen name="text_x_large">20sp</dimen>
+    <dimen name="text_xx_large">22sp</dimen>
+    <dimen name="text_xxx_large">24sp</dimen>
 </resources>

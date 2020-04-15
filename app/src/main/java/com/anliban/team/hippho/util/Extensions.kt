@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import java.math.BigDecimal
 
 inline fun <reified T : ViewModel> ComponentActivity.activityViewModel(
     crossinline body: () -> T
@@ -70,3 +71,5 @@ inline fun consume(f: () -> Unit): Boolean {
     f()
     return true
 }
+
+fun Double.roundTo2Decimal() = BigDecimal(this).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
