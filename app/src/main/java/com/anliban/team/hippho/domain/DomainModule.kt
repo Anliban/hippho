@@ -5,6 +5,7 @@ import com.anliban.team.hippho.data.MediaProvider
 import com.anliban.team.hippho.data.pref.PreferenceStorage
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
+import com.anliban.team.hippho.domain.info.LoadInfoDataUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -38,4 +39,9 @@ class DomainModule {
         mediaProvider: MediaProvider,
         preferenceStorage: PreferenceStorage
     ): DeleteImageUseCase = DeleteImageUseCase(mediaProvider, preferenceStorage)
+
+    @Provides
+    fun provideLoadInfoDataUseCase(
+        preferenceStorage: PreferenceStorage
+    ): LoadInfoDataUseCase = LoadInfoDataUseCase(preferenceStorage)
 }
