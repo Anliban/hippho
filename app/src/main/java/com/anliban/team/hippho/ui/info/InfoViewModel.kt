@@ -1,30 +1,31 @@
 package com.anliban.team.hippho.ui.info
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.anliban.team.hippho.domain.info.LoadInfoDataResult
+import com.anliban.team.hippho.domain.info.LoadInfoDataUseCase
+import com.anliban.team.hippho.util.bytesToMegaBytes
+import com.anliban.team.hippho.util.toDecimal
 import javax.inject.Inject
 
-class InfoViewModel @Inject constructor() : ViewModel() {
+class InfoViewModel @Inject constructor(
+    loadInfoDataUseCase: LoadInfoDataUseCase
+) : ViewModel() {
 
-    private val _deletedPhotoCount = MutableLiveData<Int>()
-    val deletedPhotoCount: LiveData<Int>
-        get() = _deletedPhotoCount
+    private val loadInfoResult = MediatorLiveData<LoadInfoDataResult>()
 
-    private val _deletedMemoryCount = MutableLiveData<Double>()
-    val deletedMemoryCount: LiveData<Double>
-        get() = _deletedMemoryCount
+    val deletedPhotoCount: LiveData<String> = Transformations.map(loadInfoResult) {
+        it.deletedImageCount.toDouble().toDecimal()
+    }
+
+    val deletedMemoryCount: LiveData<String> = Transformations.map(loadInfoResult) {
+        println(it)
+        it.deletedFileSize.bytesToMegaBytes().toDecimal()
+    }
 
     init {
-        loadDeletedPhotoCount()
-        loadDeletedMemoryCount()
-    }
-
-    fun loadDeletedPhotoCount() {
-        _deletedPhotoCount.postValue(10)
-    }
-
-    fun loadDeletedMemoryCount() {
-        _deletedMemoryCount.postValue(12.5)
+        loadInfoDataUseCase(Unit, loadInfoResult)
     }
 }

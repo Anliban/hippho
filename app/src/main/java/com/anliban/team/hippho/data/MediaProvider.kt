@@ -8,9 +8,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.provider.MediaStore.AUTHORITY
 import com.anliban.team.hippho.model.Image
-import com.anliban.team.hippho.util.bytesToMegaBytes
 import com.anliban.team.hippho.util.dateToTimestamp
-import com.anliban.team.hippho.util.roundTo2Decimal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -126,7 +124,7 @@ class MediaProviderImpl(context: Context) : MediaProvider {
             } else {
                 Date(getLong(dateColumn) * 1000)
             }
-        val fileSize = bytesToMegaBytes(getString(fileSizeColumn)).roundTo2Decimal()
+        val fileSize = getLong(fileSizeColumn)
 
         Timber.i("Name : $displayName / Date : $dateTaken / ID : $id / path : $contentUri / size : $fileSize")
 

@@ -5,6 +5,8 @@ import android.content.Context
 import com.anliban.team.hippho.HipphoApp
 import com.anliban.team.hippho.data.MediaProvider
 import com.anliban.team.hippho.data.MediaProviderImpl
+import com.anliban.team.hippho.data.pref.PreferenceStorage
+import com.anliban.team.hippho.data.pref.SharedPreferenceStorage
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -22,4 +24,9 @@ class AppModule {
 
     @Provides
     fun provideMediaProvider(context: Context): MediaProvider = MediaProviderImpl(context)
+
+    @Singleton
+    @Provides
+    fun providePreferenceStorage(context: Context): PreferenceStorage =
+        SharedPreferenceStorage(context)
 }

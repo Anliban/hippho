@@ -14,5 +14,5 @@ data class Image(
     val fileName: String,
     val date: Date,
     val contentUri: String,
-    val fileSize: Double
+    val fileSize: Long
 ) : Parcelable
