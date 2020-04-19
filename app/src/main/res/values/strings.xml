@@ -13,6 +13,8 @@
     <string name="deleted_photo_text">지운 사진 수</string>
     <string name="deleted_memory_text">비운 용량</string>
 
+    <string name="selected_empty_message">1장 이상의 사진을 선택해 주세요.</string>
+
     <!-- Info -->
     <string name="deleted_photo_format" >%s 장</string>
     <string name="deleted_memory_format">%s MB</string>

@@ -54,6 +54,10 @@ class DetailViewModel @AssistedInject constructor(
     val navigateToHome: LiveData<Event<Unit>>
         get() = _navigateToHome
 
+    private val _showEmptySelected = MutableLiveData<Event<Unit>>()
+    val showEmptySelected: LiveData<Event<Unit>>
+        get() = _showEmptySelected
+
     init {
         _thumbnails.addSource(detailResult) {
             _thumbnails.value = it.successOr(null)?.mapDetailUiModel()
@@ -136,10 +140,16 @@ class DetailViewModel @AssistedInject constructor(
             ?.filter { it.isScaled }
             ?.map { it.image }
 
-        images?.let {
-            viewModelScope.launch {
-                deleteImageUseCase.execute(it)
-                _navigateToHome.value = Event(Unit)
+        val isEmpty = images.isNullOrEmpty()
+
+        if (isEmpty) {
+            _showEmptySelected.value = Event(Unit)
+        } else {
+            images?.let {
+                viewModelScope.launch {
+                    deleteImageUseCase.execute(it)
+                    _navigateToHome.value = Event(Unit)
+                }
             }
         }
     }

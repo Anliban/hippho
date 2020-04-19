@@ -17,6 +17,7 @@ import com.anliban.team.hippho.databinding.FragmentDetailBinding
 import com.anliban.team.hippho.model.EventObserver
 import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
 import com.anliban.team.hippho.util.dp2px
+import com.anliban.team.hippho.util.showSnackBar
 import com.anliban.team.hippho.util.viewModel
 import dagger.android.support.DaggerFragment
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
@@ -99,6 +100,10 @@ class DetailFragment : DaggerFragment() {
                 previousBackStackEntry?.savedStateHandle?.set(EXT_REFRESH, true)
                 popBackStack()
             }
+        })
+
+        viewModel.showEmptySelected.observe(viewLifecycleOwner, EventObserver {
+            showSnackBar(getString(R.string.selected_empty_message))
         })
     }
 
