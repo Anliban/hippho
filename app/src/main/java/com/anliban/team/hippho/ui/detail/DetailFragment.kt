@@ -1,5 +1,6 @@
 package com.anliban.team.hippho.ui.detail
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -19,6 +21,7 @@ import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
 import com.anliban.team.hippho.util.dp2px
 import com.anliban.team.hippho.util.showSnackBar
 import com.anliban.team.hippho.util.viewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.android.support.DaggerFragment
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import javax.inject.Inject
@@ -70,7 +73,7 @@ class DetailFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.check -> {
-                viewModel.organizeImage()
+                viewModel.requestDeleteImages()
                 return false
             }
         }
@@ -105,9 +108,25 @@ class DetailFragment : DaggerFragment() {
         viewModel.showEmptySelected.observe(viewLifecycleOwner, EventObserver {
             showSnackBar(getString(R.string.selected_empty_message))
         })
+
+        viewModel.requestDeleteImage.observe(viewLifecycleOwner, EventObserver {
+            RequestDeletedDialogFragment {
+                viewModel.deleteImages()
+            }.show(childFragmentManager, null)
+        })
     }
 
     private companion object {
         private const val EXT_REFRESH = "refreshing"
+    }
+
+    class RequestDeletedDialogFragment(private val action: () -> Unit) : DialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            return MaterialAlertDialogBuilder(context)
+                .setMessage(R.string.request_deleted_images_text)
+                .setPositiveButton(android.R.string.ok) { _, _ -> action() }
+                .setNegativeButton(android.R.string.cancel, null) // Give up
+                .create()
+        }
     }
 }
