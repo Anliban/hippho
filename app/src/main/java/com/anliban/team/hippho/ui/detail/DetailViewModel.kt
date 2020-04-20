@@ -54,6 +54,14 @@ class DetailViewModel @AssistedInject constructor(
     val navigateToHome: LiveData<Event<Unit>>
         get() = _navigateToHome
 
+    private val _showEmptySelected = MutableLiveData<Event<Unit>>()
+    val showEmptySelected: LiveData<Event<Unit>>
+        get() = _showEmptySelected
+
+    private val _requestDeleteImage = MutableLiveData<Event<Unit>>()
+    val requestDeleteImage: LiveData<Event<Unit>>
+        get() = _requestDeleteImage
+
     init {
         _thumbnails.addSource(detailResult) {
             _thumbnails.value = it.successOr(null)?.mapDetailUiModel()
@@ -131,17 +139,29 @@ class DetailViewModel @AssistedInject constructor(
         scaleImageAnimUseCase(request, _secondLists)
     }
 
-    fun organizeImage() {
-        val images = _secondLists.value
-            ?.filter { it.isScaled }
-            ?.map { it.image }
+    fun requestDeleteImages() {
+        val isEmpty = getSelectedImages().isNullOrEmpty()
 
-        images?.let {
+        if (isEmpty) {
+            _showEmptySelected.value = Event(Unit)
+        } else {
+            _requestDeleteImage.value = Event(Unit)
+        }
+    }
+
+    fun deleteImages() {
+        getSelectedImages()?.let {
             viewModelScope.launch {
                 deleteImageUseCase.execute(it)
                 _navigateToHome.value = Event(Unit)
             }
         }
+    }
+
+    private fun getSelectedImages(): List<Image>? {
+        return _secondLists.value
+            ?.filter { it.isScaled }
+            ?.map { it.image }
     }
 
     @AssistedInject.Factory

@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 
 inline fun <reified T : ViewModel> ComponentActivity.activityViewModel(
@@ -73,3 +74,11 @@ inline fun consume(f: () -> Unit): Boolean {
 }
 
 fun Double.roundTo2Decimal() = BigDecimal(this).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
+
+fun Fragment.showSnackBar(message: String) {
+    Snackbar.make(
+        requireActivity().findViewById(android.R.id.content),
+        message,
+        Snackbar.LENGTH_SHORT
+    ).show()
+}
