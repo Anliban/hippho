@@ -9,6 +9,7 @@ import com.anliban.team.hippho.data.ImageQueryOption
 import com.anliban.team.hippho.domain.DeleteImageUseCase
 import com.anliban.team.hippho.domain.GetImageByIdUseCase
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
@@ -40,6 +41,9 @@ class DetailViewModelTest {
 
     @MockK(relaxed = true)
     lateinit var switchImagePositionUseCase: SwitchImagePositionUseCase
+
+    @MockK(relaxed = true)
+    lateinit var switchImageIndicatorUseCase : SwitchImageIndicatorUseCase
 
     lateinit var scaleImageAnimUseCase: ScaleImageAnimUseCase
 
@@ -209,6 +213,7 @@ class DetailViewModelTest {
         return DetailViewModel(
             getImageByDateUseCase,
             switchImagePositionUseCase,
+            switchImageIndicatorUseCase,
             scaleImageAnimUseCase,
             deleteImageUseCase,
             ids
