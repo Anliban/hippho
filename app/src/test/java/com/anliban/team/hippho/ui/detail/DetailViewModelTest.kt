@@ -9,6 +9,7 @@ import com.anliban.team.hippho.data.ImageQueryOption
 import com.anliban.team.hippho.domain.DeleteImageUseCase
 import com.anliban.team.hippho.domain.GetImageByIdUseCase
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorRequestParameters
 import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
@@ -43,7 +44,7 @@ class DetailViewModelTest {
     lateinit var switchImagePositionUseCase: SwitchImagePositionUseCase
 
     @MockK(relaxed = true)
-    lateinit var switchImageIndicatorUseCase : SwitchImageIndicatorUseCase
+    lateinit var switchImageIndicatorUseCase: SwitchImageIndicatorUseCase
 
     lateinit var scaleImageAnimUseCase: ScaleImageAnimUseCase
 
@@ -96,6 +97,29 @@ class DetailViewModelTest {
         val position = thumbnail.indexOf(thumbnail.find { it.image == selectedImage.image })
 
         assert(viewModel.moveToThumbnail.getOrAwaitValue().peekContent() == position)
+    }
+
+    @Test
+    fun `썸네일 스크롤시, 가로 이미지 리스트 구분자 이동`() = coroutineTestRule.testDispatcher.runBlockingTest {
+        val images = DummyData.images
+        val changedPosition = images.size - 1
+
+        val useCase = SwitchImageIndicatorUseCase()
+
+        val mockSelectedImage = MutableLiveData(images.mapDetailImageList())
+        val mockClickedId = MutableLiveData(images[0].id)
+        val selectedImageRequest = SwitchImageIndicatorRequestParameters(
+            position = changedPosition,
+            items = images.mapDetailImageList(),
+            clickedId = mockClickedId
+        )
+
+        useCase(selectedImageRequest, mockSelectedImage)
+
+        val mockSelected = mockSelectedImage.getOrAwaitValue()
+        val selectedPosition = mockSelected.indexOf(mockSelected.find { it.isSelected })
+
+        assert(changedPosition == selectedPosition)
     }
 
     @Test
