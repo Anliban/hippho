@@ -12,15 +12,17 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.FragmentDetailBinding
 import com.anliban.team.hippho.model.EventObserver
 import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
+import com.anliban.team.hippho.util.attachSnapHelperWithListener
 import com.anliban.team.hippho.util.dp2px
 import com.anliban.team.hippho.util.showSnackBar
 import com.anliban.team.hippho.util.viewModel
+import com.anliban.team.hippho.widget.OnSnapPositionChangeListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.android.support.DaggerFragment
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
@@ -83,13 +85,20 @@ class DetailFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val thumbnailSnapHelper = LinearSnapHelper()
+        val thumbnailSnapHelper = PagerSnapHelper()
+        val onSnapPositionChangeListener = object : OnSnapPositionChangeListener {
+            override fun onSnapPositionChange(position: Int) {
+                viewModel.changeIndicatorOfSecondList(position)
+            }
+        }
 
         binding.thumbnailRecyclerView.apply {
             adapter = DetailImageAdapter(viewLifecycleOwner, viewModel, DetailListType.Thumb)
+            attachSnapHelperWithListener(
+                thumbnailSnapHelper,
+                onSnapPositionChangeListener = onSnapPositionChangeListener
+            )
         }
-
-        thumbnailSnapHelper.attachToRecyclerView(binding.thumbnailRecyclerView)
 
         binding.secondRecyclerView.apply {
             adapter = DetailImageAdapter(viewLifecycleOwner, viewModel, DetailListType.Second)

@@ -10,6 +10,8 @@ import com.anliban.team.hippho.domain.DeleteImageUseCase
 import com.anliban.team.hippho.domain.GetImageByIdUseCase
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimRequestParameters
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorRequestParameters
+import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
@@ -26,6 +28,7 @@ import kotlinx.coroutines.launch
 class DetailViewModel @AssistedInject constructor(
     private val getImageByDateUseCase: GetImageByIdUseCase,
     private val switchImagePositionUseCase: SwitchImagePositionUseCase,
+    private val switchImageIndicatorUseCase: SwitchImageIndicatorUseCase,
     private val scaleImageAnimUseCase: ScaleImageAnimUseCase,
     private val deleteImageUseCase: DeleteImageUseCase,
     @Assisted private val ids: LongArray
@@ -116,6 +119,15 @@ class DetailViewModel @AssistedInject constructor(
         val thumbnails = requireNotNull(_thumbnails.value)
         val position = thumbnails.indexOf(thumbnails.find { it.image == item.image })
         _moveToThumbnail.value = Event(position)
+    }
+
+    fun changeIndicatorOfSecondList(position: Int) {
+        val request = SwitchImageIndicatorRequestParameters(
+            position,
+            items = _secondLists.value,
+            clickedId = clickedId
+        )
+        switchImageIndicatorUseCase(request, _secondLists)
     }
 
     fun selectImage() {

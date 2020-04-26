@@ -17,7 +17,7 @@ fun RecyclerView.bindDetailImages(items: List<DetailUiModel>?) {
 @BindingAdapter("moveToItem")
 fun RecyclerView.moveToItem(position: Event<Int>?) {
     val movePosition = position?.getContentIfNotHandled() ?: return
-    smoothScrollToPosition(movePosition)
+    scrollToPosition(movePosition)
 }
 
 @BindingAdapter(value = ["organizeState", "imageType"], requireAll = true)

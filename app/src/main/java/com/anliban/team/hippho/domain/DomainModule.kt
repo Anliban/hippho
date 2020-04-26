@@ -4,6 +4,7 @@ import com.anliban.team.hippho.data.ImageLoadHelper
 import com.anliban.team.hippho.data.MediaProvider
 import com.anliban.team.hippho.data.pref.PreferenceStorage
 import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
 import com.anliban.team.hippho.domain.info.LoadInfoDataUseCase
 import dagger.Module
@@ -27,6 +28,10 @@ class DomainModule {
     @Provides
     fun provideSwitchImagePositionUseCase(): SwitchImagePositionUseCase =
         SwitchImagePositionUseCase()
+
+    @Provides
+    fun provideSwitchImageIndicatorUseCase(): SwitchImageIndicatorUseCase =
+        SwitchImageIndicatorUseCase()
 
     @Provides
     fun provideScaleImageAnimUseCase(): ScaleImageAnimUseCase = ScaleImageAnimUseCase()
