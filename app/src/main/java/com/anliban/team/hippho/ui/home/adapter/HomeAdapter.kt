@@ -98,6 +98,11 @@ class HomeListContentViewHolder(
     fun onBind(item: HomeListContent) {
         binding.recyclerView.apply {
             adapter = ImageHorizontalAdapter(lifecycleOwner)
+            if (itemDecorationCount > 0) {
+                for (i in itemDecorationCount - 1 downTo 0) {
+                    removeItemDecorationAt(i)
+                }
+            }
             addItemDecoration(ImageMarginItemDecoration(dp2px(itemView.context, IMAGE_MARGIN)))
             setRecycledViewPool(recyclerViewPool)
         }
