@@ -1,6 +1,6 @@
 package com.anliban.team.hippho.ui.setting
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 
-class SettingViewModel @Inject constructor() : ViewModel()
+class SettingViewModel @ViewModelInject constructor() : ViewModel()
