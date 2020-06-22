@@ -1,5 +1,6 @@
 package com.anliban.team.hippho.ui.home
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -13,9 +14,8 @@ import com.anliban.team.hippho.model.successOr
 import com.anliban.team.hippho.util.toLoadingState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(
+class HomeViewModel @ViewModelInject constructor(
     private val getImageByDateUseCase: GetImageByDateUseCase
 ) : ViewModel() {
 
@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor(
 
     fun loadImages() {
         viewModelScope.launch {
-            getImageByDateUseCase.execute(GetImageRequestParameters(ImageQueryOption.DATE))
+            getImageByDateUseCase(GetImageRequestParameters(ImageQueryOption.DATE))
                 .toLoadingState()
                 .collect {
                     homeUiResult.value = it

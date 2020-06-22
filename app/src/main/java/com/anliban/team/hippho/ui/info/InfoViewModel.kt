@@ -1,5 +1,6 @@
 package com.anliban.team.hippho.ui.info
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
@@ -8,9 +9,8 @@ import com.anliban.team.hippho.domain.info.LoadInfoDataResult
 import com.anliban.team.hippho.domain.info.LoadInfoDataUseCase
 import com.anliban.team.hippho.util.bytesToMegaBytes
 import com.anliban.team.hippho.util.toDecimal
-import javax.inject.Inject
 
-class InfoViewModel @Inject constructor(
+class InfoViewModel @ViewModelInject constructor(
     loadInfoDataUseCase: LoadInfoDataUseCase
 ) : ViewModel() {
 

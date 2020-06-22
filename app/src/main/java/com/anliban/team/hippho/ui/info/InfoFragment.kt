@@ -5,21 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.anliban.team.hippho.databinding.FragmentInfoBinding
-import com.anliban.team.hippho.util.viewModel
-import dagger.android.support.DaggerFragment
+import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import javax.inject.Inject
 
-class InfoFragment : DaggerFragment() {
+@AndroidEntryPoint
+class InfoFragment : Fragment() {
 
     private lateinit var binding: FragmentInfoBinding
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel by viewModel<InfoViewModel> { viewModelFactory.create(InfoViewModel::class.java) }
+    private val viewModel by viewModels<InfoViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

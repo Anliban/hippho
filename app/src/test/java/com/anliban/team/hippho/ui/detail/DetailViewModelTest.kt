@@ -2,6 +2,7 @@ package com.anliban.team.hippho.ui.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.anliban.team.hippho.CoroutinesRule
 import com.anliban.team.hippho.DummyData
 import com.anliban.team.hippho.MockkRule
@@ -15,6 +16,7 @@ import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameter
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.getOrAwaitValue
+import com.anliban.team.hippho.util.requireValue
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -51,12 +53,17 @@ class DetailViewModelTest {
     @MockK(relaxed = true)
     lateinit var deleteImageUseCase: DeleteImageUseCase
 
+    @MockK(relaxed = true)
+    lateinit var savedStateHandle: SavedStateHandle
+
     private lateinit var viewModel: DetailViewModel
 
     @Test
     fun `요청한 id값들의 이미지 로드`() = coroutineTestRule.testDispatcher.runBlockingTest {
         val ids = DummyData.imageIds
         val images = DummyData.images
+
+        every { savedStateHandle.requireValue<LongArray>("ids") } returns ids
 
         val request = GetImageRequestParameters(
             option = ImageQueryOption.ID,
@@ -65,7 +72,7 @@ class DetailViewModelTest {
 
         viewModel = createViewModel()
 
-        coVerify { getImageByDateUseCase.execute(request) }
+        coVerify { getImageByDateUseCase(request) }
 
         assert(viewModel.thumbnails.getOrAwaitValue() == images.mapDetailUiModel())
         assert(viewModel.secondLists.getOrAwaitValue() == images.mapDetailImageList())
@@ -223,13 +230,15 @@ class DetailViewModelTest {
     private fun createViewModel(): DetailViewModel {
         val ids = DummyData.imageIds
 
+        every { savedStateHandle.requireValue<LongArray>("ids") } returns ids
+
         val request = GetImageRequestParameters(
             option = ImageQueryOption.ID,
             ids = DummyData.imageIds.toList()
         )
 
         coEvery {
-            getImageByDateUseCase.execute(request)
+            getImageByDateUseCase(request)
         } returns flowOf(DummyData.images)
 
         scaleImageAnimUseCase = ScaleImageAnimUseCase()
@@ -240,7 +249,7 @@ class DetailViewModelTest {
             switchImageIndicatorUseCase,
             scaleImageAnimUseCase,
             deleteImageUseCase,
-            ids
+            savedStateHandle
         )
     }
 }

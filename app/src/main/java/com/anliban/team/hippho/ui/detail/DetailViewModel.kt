@@ -1,8 +1,11 @@
 package com.anliban.team.hippho.ui.detail
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
@@ -19,19 +22,18 @@ import com.anliban.team.hippho.model.Event
 import com.anliban.team.hippho.model.Image
 import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.model.successOr
+import com.anliban.team.hippho.util.requireValue
 import com.anliban.team.hippho.util.toLoadingState
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class DetailViewModel @AssistedInject constructor(
+class DetailViewModel @ViewModelInject constructor(
     private val getImageByDateUseCase: GetImageByIdUseCase,
     private val switchImagePositionUseCase: SwitchImagePositionUseCase,
     private val switchImageIndicatorUseCase: SwitchImageIndicatorUseCase,
     private val scaleImageAnimUseCase: ScaleImageAnimUseCase,
     private val deleteImageUseCase: DeleteImageUseCase,
-    @Assisted private val ids: LongArray
+    @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val detailResult = MediatorLiveData<Result<List<Image>>>()
@@ -91,14 +93,14 @@ class DetailViewModel @AssistedInject constructor(
         organizeImagesState.addSource(secondLists) { images ->
             organizeImagesState.value = images?.all { it.isScaled }
         }
-
+        val ids = savedStateHandle.requireValue<LongArray>("ids")
         val request = GetImageRequestParameters(
             option = ImageQueryOption.ID,
             ids = ids.toList()
         )
 
         viewModelScope.launch {
-            getImageByDateUseCase.execute(request)
+            getImageByDateUseCase(request)
                 .toLoadingState()
                 .collect {
                     detailResult.value = it
@@ -174,10 +176,5 @@ class DetailViewModel @AssistedInject constructor(
         return _secondLists.value
             ?.filter { it.isScaled }
             ?.map { it.image }
-    }
-
-    @AssistedInject.Factory
-    interface Factory {
-        fun create(ids: LongArray): DetailViewModel
     }
 }
