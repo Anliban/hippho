@@ -21,7 +21,6 @@ class InfoViewModel @ViewModelInject constructor(
     }
 
     val deletedMemoryCount: LiveData<String> = Transformations.map(loadInfoResult) {
-        println(it)
         it.deletedFileSize.bytesToMegaBytes().toDecimal()
     }
 
