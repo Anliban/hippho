@@ -12,6 +12,7 @@ import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.model.successOr
 import com.anliban.team.hippho.util.toLoadingState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -27,6 +28,8 @@ class HomeViewModel @ViewModelInject constructor(
 
     val swipeRefreshing: LiveData<Boolean>
 
+    private var loadImagesJob: Job? = null
+
     init {
 
         _imageList.addSource(homeUiResult) { result ->
@@ -39,7 +42,8 @@ class HomeViewModel @ViewModelInject constructor(
     }
 
     fun loadImages() {
-        viewModelScope.launch {
+        loadImagesJob?.cancel()
+        loadImagesJob = viewModelScope.launch {
             getImageByDateUseCase(GetImageRequestParameters(ImageQueryOption.DATE))
                 .toLoadingState()
                 .collect {
