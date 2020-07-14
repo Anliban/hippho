@@ -3,10 +3,11 @@ package com.anliban.team.hippho.domain
 import com.anliban.team.hippho.data.ImageLoadHelper
 import com.anliban.team.hippho.data.MediaProvider
 import com.anliban.team.hippho.data.pref.PreferenceStorage
+import com.anliban.team.hippho.di.qualifier.DefaultDispatcher
 import com.anliban.team.hippho.di.qualifier.IoDispatcher
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
+import com.anliban.team.hippho.domain.detail.ScaleImageAnimLiveDataUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorLiveDataUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImagePositionLiveDataUseCase
 import com.anliban.team.hippho.domain.info.LoadInfoDataUseCase
 import dagger.Module
 import dagger.Provides
@@ -33,15 +34,19 @@ class DomainModule {
     ): GetImageByIdUseCase = GetImageByIdUseCase(mediaProvider, ioDispatcher)
 
     @Provides
-    fun provideSwitchImagePositionUseCase(): SwitchImagePositionUseCase =
-        SwitchImagePositionUseCase()
+    fun provideSwitchImagePositionUseCase(
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+    ): SwitchImagePositionLiveDataUseCase = SwitchImagePositionLiveDataUseCase(defaultDispatcher)
 
     @Provides
-    fun provideSwitchImageIndicatorUseCase(): SwitchImageIndicatorUseCase =
-        SwitchImageIndicatorUseCase()
+    fun provideSwitchImageIndicatorUseCase(
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+    ): SwitchImageIndicatorLiveDataUseCase = SwitchImageIndicatorLiveDataUseCase(defaultDispatcher)
 
     @Provides
-    fun provideScaleImageAnimUseCase(): ScaleImageAnimUseCase = ScaleImageAnimUseCase()
+    fun provideScaleImageAnimUseCase(
+        @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+    ): ScaleImageAnimLiveDataUseCase = ScaleImageAnimLiveDataUseCase(defaultDispatcher)
 
     @Provides
     fun provideImageLoadHelper(): ImageLoadHelper = ImageLoadHelper()
@@ -54,6 +59,7 @@ class DomainModule {
 
     @Provides
     fun provideLoadInfoDataUseCase(
-        preferenceStorage: PreferenceStorage
-    ): LoadInfoDataUseCase = LoadInfoDataUseCase(preferenceStorage)
+        preferenceStorage: PreferenceStorage,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher
+    ): LoadInfoDataUseCase = LoadInfoDataUseCase(preferenceStorage, ioDispatcher)
 }
