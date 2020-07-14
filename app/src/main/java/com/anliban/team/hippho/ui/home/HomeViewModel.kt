@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
-import com.anliban.team.hippho.domain.GetImageByDateUseCase
+import com.anliban.team.hippho.domain.image.GetImageByDateUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.model.successOr

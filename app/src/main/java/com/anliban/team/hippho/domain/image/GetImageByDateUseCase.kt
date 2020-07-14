@@ -1,7 +1,8 @@
-package com.anliban.team.hippho.domain
+package com.anliban.team.hippho.domain.image
 import com.anliban.team.hippho.data.ImageLoadHelper
 import com.anliban.team.hippho.data.MediaProvider
 import com.anliban.team.hippho.di.qualifier.IoDispatcher
+import com.anliban.team.hippho.domain.FlowUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.ui.home.HomeListContent
 import com.anliban.team.hippho.ui.home.HomeListHeader
