@@ -5,9 +5,12 @@ import com.anliban.team.hippho.data.MediaProvider
 import com.anliban.team.hippho.data.pref.PreferenceStorage
 import com.anliban.team.hippho.di.qualifier.DefaultDispatcher
 import com.anliban.team.hippho.di.qualifier.IoDispatcher
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimLiveDataUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorLiveDataUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionLiveDataUseCase
+import com.anliban.team.hippho.domain.image.ScaleImageAnimLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImageIndicatorLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImagePositionLiveDataUseCase
+import com.anliban.team.hippho.domain.image.DeleteImageUseCase
+import com.anliban.team.hippho.domain.image.GetImageByDateUseCase
+import com.anliban.team.hippho.domain.image.GetImageByIdUseCase
 import com.anliban.team.hippho.domain.info.LoadInfoDataUseCase
 import dagger.Module
 import dagger.Provides
@@ -25,28 +28,45 @@ class DomainModule {
         imageLoaderHelper: ImageLoadHelper,
         @IoDispatcher ioDispatcher: CoroutineDispatcher
     ): GetImageByDateUseCase =
-        GetImageByDateUseCase(mediaProvider, imageLoaderHelper, ioDispatcher)
+        GetImageByDateUseCase(
+            mediaProvider,
+            imageLoaderHelper,
+            ioDispatcher
+        )
 
     @Provides
     fun provideGetImageByIdUseCase(
         mediaProvider: MediaProvider,
         @IoDispatcher ioDispatcher: CoroutineDispatcher
-    ): GetImageByIdUseCase = GetImageByIdUseCase(mediaProvider, ioDispatcher)
+    ): GetImageByIdUseCase =
+        GetImageByIdUseCase(
+            mediaProvider,
+            ioDispatcher
+        )
 
     @Provides
     fun provideSwitchImagePositionUseCase(
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
-    ): SwitchImagePositionLiveDataUseCase = SwitchImagePositionLiveDataUseCase(defaultDispatcher)
+    ): SwitchImagePositionLiveDataUseCase =
+        SwitchImagePositionLiveDataUseCase(
+            defaultDispatcher
+        )
 
     @Provides
     fun provideSwitchImageIndicatorUseCase(
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
-    ): SwitchImageIndicatorLiveDataUseCase = SwitchImageIndicatorLiveDataUseCase(defaultDispatcher)
+    ): SwitchImageIndicatorLiveDataUseCase =
+        SwitchImageIndicatorLiveDataUseCase(
+            defaultDispatcher
+        )
 
     @Provides
     fun provideScaleImageAnimUseCase(
         @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
-    ): ScaleImageAnimLiveDataUseCase = ScaleImageAnimLiveDataUseCase(defaultDispatcher)
+    ): ScaleImageAnimLiveDataUseCase =
+        ScaleImageAnimLiveDataUseCase(
+            defaultDispatcher
+        )
 
     @Provides
     fun provideImageLoadHelper(): ImageLoadHelper = ImageLoadHelper()
@@ -55,7 +75,11 @@ class DomainModule {
     fun provideDeleteImageUseCase(
         mediaProvider: MediaProvider,
         preferenceStorage: PreferenceStorage
-    ): DeleteImageUseCase = DeleteImageUseCase(mediaProvider, preferenceStorage)
+    ): DeleteImageUseCase =
+        DeleteImageUseCase(
+            mediaProvider,
+            preferenceStorage
+        )
 
     @Provides
     fun provideLoadInfoDataUseCase(

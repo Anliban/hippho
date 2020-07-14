@@ -9,14 +9,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
-import com.anliban.team.hippho.domain.DeleteImageUseCase
-import com.anliban.team.hippho.domain.GetImageByIdUseCase
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimRequestParameters
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimLiveDataUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorLiveDataUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionLiveDataUseCase
+import com.anliban.team.hippho.domain.image.DeleteImageUseCase
+import com.anliban.team.hippho.domain.image.GetImageByIdUseCase
+import com.anliban.team.hippho.domain.image.ScaleImageAnimRequestParameters
+import com.anliban.team.hippho.domain.image.ScaleImageAnimLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImageIndicatorRequestParameters
+import com.anliban.team.hippho.domain.image.SwitchImageIndicatorLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImagePositionRequestParameters
+import com.anliban.team.hippho.domain.image.SwitchImagePositionLiveDataUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.model.Event
 import com.anliban.team.hippho.model.Image
@@ -111,11 +111,12 @@ class DetailViewModel @ViewModelInject constructor(
     fun clickToSecondItem(item: DetailUiModel) {
 
         require(item is DetailImage)
-        val request = SwitchImagePositionRequestParameters(
-            model = item,
-            items = _secondLists.value,
-            clickedId = clickedId
-        )
+        val request =
+            SwitchImagePositionRequestParameters(
+                model = item,
+                items = _secondLists.value,
+                clickedId = clickedId
+            )
 
         viewModelScope.launch {
             _secondLists.value = switchImagePositionUseCase(request).successOr(null)
@@ -127,22 +128,24 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     fun changeIndicatorOfSecondList(position: Int) {
-        val request = SwitchImageIndicatorRequestParameters(
-            position,
-            items = _secondLists.value,
-            clickedId = clickedId
-        )
+        val request =
+            SwitchImageIndicatorRequestParameters(
+                position,
+                items = _secondLists.value,
+                clickedId = clickedId
+            )
         viewModelScope.launch {
             _secondLists.value = switchImageIndicatorUseCase(request).successOr(null)
         }
     }
 
     fun selectImage() {
-        val request = ScaleImageAnimRequestParameters(
-            clickedId = clickedId,
-            items = _secondLists.value,
-            type = OrganizeImage.Single
-        )
+        val request =
+            ScaleImageAnimRequestParameters(
+                clickedId = clickedId,
+                items = _secondLists.value,
+                type = OrganizeImage.Single
+            )
 
         viewModelScope.launch {
             _secondLists.value = scaleImageAnimUseCase(request).successOr(null)
@@ -150,12 +153,13 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     fun selectImages() {
-        val request = ScaleImageAnimRequestParameters(
-            clickedId = clickedId,
-            items = _secondLists.value,
-            type = OrganizeImage.All,
-            allState = organizeImagesState.value
-        )
+        val request =
+            ScaleImageAnimRequestParameters(
+                clickedId = clickedId,
+                items = _secondLists.value,
+                type = OrganizeImage.All,
+                allState = organizeImagesState.value
+            )
 
         viewModelScope.launch {
             _secondLists.value = scaleImageAnimUseCase(request).successOr(null)

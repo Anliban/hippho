@@ -1,4 +1,4 @@
-package com.anliban.team.hippho.domain.detail
+package com.anliban.team.hippho.domain.image
 
 import androidx.lifecycle.MutableLiveData
 import com.anliban.team.hippho.di.qualifier.DefaultDispatcher
