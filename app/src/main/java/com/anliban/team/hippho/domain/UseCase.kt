@@ -1,19 +1,23 @@
 package com.anliban.team.hippho.domain
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.anliban.team.hippho.model.Result
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
-abstract class UseCase<in P, R> {
+abstract class UseCase<in P, R>(private val coroutineDispatcher: CoroutineDispatcher) {
 
-    operator fun invoke(parameters: P, result: MutableLiveData<R>) {
-        result.postValue(execute(parameters))
+    suspend operator fun invoke(parameters: P): Result<R> {
+        return try {
+            withContext(coroutineDispatcher) {
+                execute(parameters).let {
+                    Result.Success(it)
+                }
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 
-    operator fun invoke(parameters: P): LiveData<R> {
-        val liveCallback: MutableLiveData<R> = MutableLiveData()
-        this(parameters, liveCallback)
-        return liveCallback
-    }
-
-    protected abstract fun execute(parameters: P): R
+    @Throws(RuntimeException::class)
+    protected abstract suspend fun execute(parameters: P): R
 }

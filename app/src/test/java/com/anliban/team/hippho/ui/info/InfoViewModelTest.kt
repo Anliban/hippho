@@ -1,6 +1,7 @@
 package com.anliban.team.hippho.ui.info
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.anliban.team.hippho.CoroutinesRule
 import com.anliban.team.hippho.MockkRule
 import com.anliban.team.hippho.data.pref.PreferenceStorage
 import com.anliban.team.hippho.domain.info.LoadInfoDataResult
@@ -21,7 +22,10 @@ class InfoViewModelTest {
     @get:Rule
     val mockkRule = MockkRule(this)
 
-    lateinit var viewModel: InfoViewModel
+    @get:Rule
+    val coroutineTestRule = CoroutinesRule()
+
+    private lateinit var viewModel: InfoViewModel
 
     @Test
     fun `지운사진 및 이미지 데이터 로드`() {
@@ -50,7 +54,7 @@ class InfoViewModelTest {
             preferenceStorage.deletedFileSize
         } returns 2048
         return InfoViewModel(
-            loadInfoDataUseCase = LoadInfoDataUseCase(preferenceStorage)
+            loadInfoDataUseCase = LoadInfoDataUseCase(preferenceStorage, coroutineTestRule.testDispatcher)
         )
     }
 }

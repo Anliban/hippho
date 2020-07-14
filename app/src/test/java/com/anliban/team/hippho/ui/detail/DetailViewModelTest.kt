@@ -9,13 +9,14 @@ import com.anliban.team.hippho.MockkRule
 import com.anliban.team.hippho.data.ImageQueryOption
 import com.anliban.team.hippho.domain.DeleteImageUseCase
 import com.anliban.team.hippho.domain.GetImageByIdUseCase
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
+import com.anliban.team.hippho.domain.detail.ScaleImageAnimLiveDataUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorLiveDataUseCase
 import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
+import com.anliban.team.hippho.domain.detail.SwitchImagePositionLiveDataUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.getOrAwaitValue
+import com.anliban.team.hippho.model.successOr
 import com.anliban.team.hippho.util.requireValue
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -43,12 +44,12 @@ class DetailViewModelTest {
     lateinit var getImageByDateUseCase: GetImageByIdUseCase
 
     @MockK(relaxed = true)
-    lateinit var switchImagePositionUseCase: SwitchImagePositionUseCase
+    lateinit var switchImagePositionUseCase: SwitchImagePositionLiveDataUseCase
 
     @MockK(relaxed = true)
-    lateinit var switchImageIndicatorUseCase: SwitchImageIndicatorUseCase
+    lateinit var switchImageIndicatorUseCase: SwitchImageIndicatorLiveDataUseCase
 
-    lateinit var scaleImageAnimUseCase: ScaleImageAnimUseCase
+    lateinit var scaleImageAnimUseCase: ScaleImageAnimLiveDataUseCase
 
     @MockK(relaxed = true)
     lateinit var deleteImageUseCase: DeleteImageUseCase
@@ -91,8 +92,9 @@ class DetailViewModelTest {
             clickedId = mockClickedId
         )
 
-        every {
-            switchImagePositionUseCase(selectedImageRequest, mockSelectedImage)
+        coEvery {
+            mockSelectedImage.value =
+                switchImagePositionUseCase(selectedImageRequest).successOr(null)
         } just runs
 
         viewModel = createViewModel()
@@ -111,7 +113,7 @@ class DetailViewModelTest {
         val images = DummyData.images
         val changedPosition = images.size - 1
 
-        val useCase = SwitchImageIndicatorUseCase()
+        val useCase = SwitchImageIndicatorLiveDataUseCase(coroutineTestRule.testDispatcher)
 
         val mockSelectedImage = MutableLiveData(images.mapDetailImageList())
         val mockClickedId = MutableLiveData(images[0].id)
@@ -121,7 +123,7 @@ class DetailViewModelTest {
             clickedId = mockClickedId
         )
 
-        useCase(selectedImageRequest, mockSelectedImage)
+        mockSelectedImage.value = useCase(selectedImageRequest).successOr(null)
 
         val mockSelected = mockSelectedImage.getOrAwaitValue()
         val selectedPosition = mockSelected.indexOf(mockSelected.find { it.isSelected })
@@ -241,7 +243,7 @@ class DetailViewModelTest {
             getImageByDateUseCase(request)
         } returns flowOf(DummyData.images)
 
-        scaleImageAnimUseCase = ScaleImageAnimUseCase()
+        scaleImageAnimUseCase = ScaleImageAnimLiveDataUseCase(coroutineTestRule.testDispatcher)
 
         return DetailViewModel(
             getImageByDateUseCase,

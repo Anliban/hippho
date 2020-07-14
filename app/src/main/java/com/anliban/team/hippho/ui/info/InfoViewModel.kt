@@ -5,10 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.domain.info.LoadInfoDataResult
 import com.anliban.team.hippho.domain.info.LoadInfoDataUseCase
+import com.anliban.team.hippho.model.successOr
 import com.anliban.team.hippho.util.bytesToMegaBytes
 import com.anliban.team.hippho.util.toDecimal
+import kotlinx.coroutines.launch
 
 class InfoViewModel @ViewModelInject constructor(
     loadInfoDataUseCase: LoadInfoDataUseCase
@@ -25,6 +28,8 @@ class InfoViewModel @ViewModelInject constructor(
     }
 
     init {
-        loadInfoDataUseCase(Unit, loadInfoResult)
+        viewModelScope.launch {
+            loadInfoResult.value = loadInfoDataUseCase(Unit).successOr(null)
+        }
     }
 }
