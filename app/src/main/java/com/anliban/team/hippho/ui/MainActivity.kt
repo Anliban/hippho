@@ -24,7 +24,7 @@ import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.ActivityMainBinding
 import com.anliban.team.hippho.util.consume
 import dagger.hilt.android.AndroidEntryPoint
-import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import dev.chrisbanes.insetter.Insetter
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -64,25 +64,26 @@ class MainActivity : AppCompatActivity() {
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
 
-        binding.contentContainer.doOnApplyWindowInsets { view, insets, initialState ->
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.updatePadding(
                 left = insets.systemWindowInsetLeft + initialState.paddings.left,
                 right = insets.systemWindowInsetRight + initialState.paddings.right
             )
-        }
+        }.applyToView(binding.contentContainer)
 
-        binding.navigationView.doOnApplyWindowInsets { navigationView, insets, initialState ->
-            navigationView.updatePadding(
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
+            view.updatePadding(
                 top = initialState.paddings.top + insets.systemWindowInsetTop
             )
-        }
+        }.applyToView(binding.navigationView)
 
-        binding.toolbar.doOnApplyWindowInsets { view, insets, initialState ->
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 topMargin = insets.systemWindowInsetTop + initialState.margins.top
             }
-        }
-        binding.navigationView.doOnApplyWindowInsets { view, insets, initialState ->
+        }.applyToView(binding.toolbar)
+
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.apply {
                 val leftSpace = insets.systemWindowInsetLeft + initialState.paddings.left
                 updatePadding(left = leftSpace)
@@ -92,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
+        }.applyToView(binding.navigationView)
 
         binding.navigationView.setNavigationItemSelectedListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)

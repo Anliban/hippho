@@ -18,7 +18,7 @@ import com.anliban.team.hippho.ui.home.adapter.HomeAdapter
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import dagger.hilt.android.AndroidEntryPoint
-import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import dev.chrisbanes.insetter.Insetter
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -42,18 +42,19 @@ class HomeFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }
         binding.recyclerView.apply {
-            adapter = HomeAdapter(viewLifecycleOwner) { ids, sharedElement ->
+            adapter = HomeAdapter(viewLifecycleOwner) { ids, _ ->
                 findNavController().navigate(
                     HomeFragmentDirections.actionToDetail(ids.toLongArray())
                     // , FragmentNavigatorExtras(sharedElement)
                 )
             }
-            doOnApplyWindowInsets { recyclerView, insets, initialState ->
-                recyclerView.updatePadding(
-                    bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
-                )
-            }
         }
+
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
+            view.updatePadding(
+                    bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
+            )
+        }.applyToView(binding.recyclerView)
 
         return binding.root
     }

@@ -25,7 +25,7 @@ import com.anliban.team.hippho.util.showSnackBar
 import com.anliban.team.hippho.widget.OnSnapPositionChangeListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import dev.chrisbanes.insetter.Insetter
 
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
@@ -50,11 +50,11 @@ class DetailFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.root.doOnApplyWindowInsets { view, insets, initialState ->
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.updatePadding(
                 bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
             )
-        }
+        }.applyToView(binding.root)
 
         setHasOptionsMenu(true)
         return binding.root
@@ -124,7 +124,7 @@ class DetailFragment : Fragment() {
 
     class RequestDeletedDialogFragment(private val action: () -> Unit) : DialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            return MaterialAlertDialogBuilder(context)
+            return MaterialAlertDialogBuilder(requireContext())
                 .setMessage(R.string.request_deleted_images_text)
                 .setPositiveButton(android.R.string.ok) { _, _ -> action() }
                 .setNegativeButton(android.R.string.cancel, null) // Give up

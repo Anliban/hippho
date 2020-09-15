@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.anliban.team.hippho.databinding.FragmentSettingBinding
 import dagger.hilt.android.AndroidEntryPoint
-import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import dev.chrisbanes.insetter.Insetter
 
 @AndroidEntryPoint
 class SettingFragment : Fragment() {
@@ -28,11 +28,11 @@ class SettingFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.root.doOnApplyWindowInsets { view, insets, initialState ->
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.updatePadding(
                 bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
             )
-        }
+        }.applyToView(binding.root)
 
         return binding.root
     }
