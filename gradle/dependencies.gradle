@@ -32,9 +32,6 @@ dependencies {
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidHilt"
     kapt "androidx.hilt:hilt-compiler:$androidHilt"
 
-    // Ted
-    implementation "gun0912.ted:tedpermission:$ted_permission_version"
-
     // Timber
     implementation "com.jakewharton.timber:timber:$timber"
 
