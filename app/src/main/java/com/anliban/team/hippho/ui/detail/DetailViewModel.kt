@@ -1,37 +1,39 @@
 package com.anliban.team.hippho.ui.detail
 
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
-import com.anliban.team.hippho.domain.DeleteImageUseCase
-import com.anliban.team.hippho.domain.GetImageByIdUseCase
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimRequestParameters
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
+import com.anliban.team.hippho.domain.image.DeleteImageUseCase
+import com.anliban.team.hippho.domain.image.GetImageByIdUseCase
+import com.anliban.team.hippho.domain.image.ScaleImageAnimRequestParameters
+import com.anliban.team.hippho.domain.image.ScaleImageAnimLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImageIndicatorRequestParameters
+import com.anliban.team.hippho.domain.image.SwitchImageIndicatorLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImagePositionRequestParameters
+import com.anliban.team.hippho.domain.image.SwitchImagePositionLiveDataUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.model.Event
 import com.anliban.team.hippho.model.Image
 import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.model.successOr
+import com.anliban.team.hippho.util.requireValue
 import com.anliban.team.hippho.util.toLoadingState
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class DetailViewModel @AssistedInject constructor(
+class DetailViewModel @ViewModelInject constructor(
     private val getImageByDateUseCase: GetImageByIdUseCase,
-    private val switchImagePositionUseCase: SwitchImagePositionUseCase,
-    private val switchImageIndicatorUseCase: SwitchImageIndicatorUseCase,
-    private val scaleImageAnimUseCase: ScaleImageAnimUseCase,
+    private val switchImagePositionUseCase: SwitchImagePositionLiveDataUseCase,
+    private val switchImageIndicatorUseCase: SwitchImageIndicatorLiveDataUseCase,
+    private val scaleImageAnimUseCase: ScaleImageAnimLiveDataUseCase,
     private val deleteImageUseCase: DeleteImageUseCase,
-    @Assisted private val ids: LongArray
+    @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val detailResult = MediatorLiveData<Result<List<Image>>>()
@@ -91,14 +93,14 @@ class DetailViewModel @AssistedInject constructor(
         organizeImagesState.addSource(secondLists) { images ->
             organizeImagesState.value = images?.all { it.isScaled }
         }
-
+        val ids = savedStateHandle.requireValue<LongArray>("ids")
         val request = GetImageRequestParameters(
             option = ImageQueryOption.ID,
             ids = ids.toList()
         )
 
         viewModelScope.launch {
-            getImageByDateUseCase.execute(request)
+            getImageByDateUseCase(request)
                 .toLoadingState()
                 .collect {
                     detailResult.value = it
@@ -109,12 +111,16 @@ class DetailViewModel @AssistedInject constructor(
     fun clickToSecondItem(item: DetailUiModel) {
 
         require(item is DetailImage)
-        val request = SwitchImagePositionRequestParameters(
-            model = item,
-            items = _secondLists.value,
-            clickedId = clickedId
-        )
-        switchImagePositionUseCase(request, _secondLists)
+        val request =
+            SwitchImagePositionRequestParameters(
+                model = item,
+                items = _secondLists.value,
+                clickedId = clickedId
+            )
+
+        viewModelScope.launch {
+            _secondLists.value = switchImagePositionUseCase(request).successOr(null)
+        }
 
         val thumbnails = requireNotNull(_thumbnails.value)
         val position = thumbnails.indexOf(thumbnails.find { it.image == item.image })
@@ -122,33 +128,42 @@ class DetailViewModel @AssistedInject constructor(
     }
 
     fun changeIndicatorOfSecondList(position: Int) {
-        val request = SwitchImageIndicatorRequestParameters(
-            position,
-            items = _secondLists.value,
-            clickedId = clickedId
-        )
-        switchImageIndicatorUseCase(request, _secondLists)
+        val request =
+            SwitchImageIndicatorRequestParameters(
+                position,
+                items = _secondLists.value,
+                clickedId = clickedId
+            )
+        viewModelScope.launch {
+            _secondLists.value = switchImageIndicatorUseCase(request).successOr(null)
+        }
     }
 
     fun selectImage() {
-        val request = ScaleImageAnimRequestParameters(
-            clickedId = clickedId,
-            items = _secondLists.value,
-            type = OrganizeImage.Single
-        )
+        val request =
+            ScaleImageAnimRequestParameters(
+                clickedId = clickedId,
+                items = _secondLists.value,
+                type = OrganizeImage.Single
+            )
 
-        scaleImageAnimUseCase(request, _secondLists)
+        viewModelScope.launch {
+            _secondLists.value = scaleImageAnimUseCase(request).successOr(null)
+        }
     }
 
     fun selectImages() {
-        val request = ScaleImageAnimRequestParameters(
-            clickedId = clickedId,
-            items = _secondLists.value,
-            type = OrganizeImage.All,
-            allState = organizeImagesState.value
-        )
+        val request =
+            ScaleImageAnimRequestParameters(
+                clickedId = clickedId,
+                items = _secondLists.value,
+                type = OrganizeImage.All,
+                allState = organizeImagesState.value
+            )
 
-        scaleImageAnimUseCase(request, _secondLists)
+        viewModelScope.launch {
+            _secondLists.value = scaleImageAnimUseCase(request).successOr(null)
+        }
     }
 
     fun requestDeleteImages() {
@@ -174,10 +189,5 @@ class DetailViewModel @AssistedInject constructor(
         return _secondLists.value
             ?.filter { it.isScaled }
             ?.map { it.image }
-    }
-
-    @AssistedInject.Factory
-    interface Factory {
-        fun create(ids: LongArray): DetailViewModel
     }
 }

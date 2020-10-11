@@ -1,18 +1,16 @@
-package com.anliban.team.hippho.domain.detail
+package com.anliban.team.hippho.domain.image
 
 import androidx.lifecycle.MutableLiveData
+import com.anliban.team.hippho.di.qualifier.DefaultDispatcher
 import com.anliban.team.hippho.domain.UseCase
 import com.anliban.team.hippho.ui.detail.DetailImage
+import kotlinx.coroutines.CoroutineDispatcher
 
-/**
- * Created by choejun-yeong on 24/04/2020.
- */
+class SwitchImageIndicatorLiveDataUseCase(
+    @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+) : UseCase<SwitchImageIndicatorRequestParameters, List<DetailImage>>(defaultDispatcher) {
 
-class SwitchImageIndicatorUseCase :
-    UseCase<SwitchImageIndicatorRequestParameters, List<DetailImage>>() {
-
-    override fun execute(parameters: SwitchImageIndicatorRequestParameters): List<DetailImage> {
-
+    override suspend fun execute(parameters: SwitchImageIndicatorRequestParameters): List<DetailImage> {
         val clickedId = parameters.clickedId
         val position = parameters.position
         val result = parameters.items?.toMutableList() ?: mutableListOf()

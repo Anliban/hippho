@@ -4,6 +4,8 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.doOnLayout
@@ -11,7 +13,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
@@ -21,13 +22,12 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.anliban.team.hippho.R
 import com.anliban.team.hippho.databinding.ActivityMainBinding
-import com.anliban.team.hippho.util.activityViewModel
 import com.anliban.team.hippho.util.consume
-import dagger.android.support.DaggerAppCompatActivity
-import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
+import dev.chrisbanes.insetter.Insetter
 
-class MainActivity : DaggerAppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
 
     private companion object {
         private val TOP_LEVEL_DESTINATION = setOf(
@@ -37,14 +37,7 @@ class MainActivity : DaggerAppCompatActivity() {
         )
     }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: MainViewModel by activityViewModel {
-        viewModelFactory.create(
-            MainViewModel::class.java
-        )
-    }
+    private val viewModel: MainViewModel by viewModels<MainViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -71,25 +64,26 @@ class MainActivity : DaggerAppCompatActivity() {
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
 
-        binding.contentContainer.doOnApplyWindowInsets { view, insets, initialState ->
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.updatePadding(
                 left = insets.systemWindowInsetLeft + initialState.paddings.left,
                 right = insets.systemWindowInsetRight + initialState.paddings.right
             )
-        }
+        }.applyToView(binding.contentContainer)
 
-        binding.navigationView.doOnApplyWindowInsets { navigationView, insets, initialState ->
-            navigationView.updatePadding(
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
+            view.updatePadding(
                 top = initialState.paddings.top + insets.systemWindowInsetTop
             )
-        }
+        }.applyToView(binding.navigationView)
 
-        binding.toolbar.doOnApplyWindowInsets { view, insets, initialState ->
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 topMargin = insets.systemWindowInsetTop + initialState.margins.top
             }
-        }
-        binding.navigationView.doOnApplyWindowInsets { view, insets, initialState ->
+        }.applyToView(binding.toolbar)
+
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.apply {
                 val leftSpace = insets.systemWindowInsetLeft + initialState.paddings.left
                 updatePadding(left = leftSpace)
@@ -99,7 +93,7 @@ class MainActivity : DaggerAppCompatActivity() {
                     }
                 }
             }
-        }
+        }.applyToView(binding.navigationView)
 
         binding.navigationView.setNavigationItemSelectedListener {
             binding.drawerLayout.closeDrawer(GravityCompat.START)

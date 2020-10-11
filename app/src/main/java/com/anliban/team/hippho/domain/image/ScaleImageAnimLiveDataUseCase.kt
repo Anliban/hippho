@@ -1,14 +1,17 @@
-package com.anliban.team.hippho.domain.detail
+package com.anliban.team.hippho.domain.image
 
 import androidx.lifecycle.MutableLiveData
+import com.anliban.team.hippho.di.qualifier.DefaultDispatcher
 import com.anliban.team.hippho.domain.UseCase
 import com.anliban.team.hippho.ui.detail.DetailImage
 import com.anliban.team.hippho.ui.detail.OrganizeImage
+import kotlinx.coroutines.CoroutineDispatcher
 
-class ScaleImageAnimUseCase :
-    UseCase<ScaleImageAnimRequestParameters, List<DetailImage>>() {
+class ScaleImageAnimLiveDataUseCase(
+    @DefaultDispatcher defaultDispatcher: CoroutineDispatcher
+) : UseCase<ScaleImageAnimRequestParameters, List<DetailImage>>(defaultDispatcher) {
 
-    override fun execute(parameters: ScaleImageAnimRequestParameters): List<DetailImage> {
+    override suspend fun execute(parameters: ScaleImageAnimRequestParameters): List<DetailImage> {
         return when (parameters.type) {
             OrganizeImage.All -> scaleAll(parameters.allState, parameters.items)
             OrganizeImage.Single -> scaleSingle(parameters.clickedId, parameters.items)

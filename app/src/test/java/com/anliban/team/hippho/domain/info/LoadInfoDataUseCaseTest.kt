@@ -1,12 +1,13 @@
 package com.anliban.team.hippho.domain.info
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
+import com.anliban.team.hippho.CoroutinesRule
 import com.anliban.team.hippho.MockkRule
 import com.anliban.team.hippho.data.pref.PreferenceStorage
-import com.anliban.team.hippho.getOrAwaitValue
+import com.anliban.team.hippho.model.successOr
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -18,6 +19,9 @@ class LoadInfoDataUseCaseTest {
     @get:Rule
     val mockkRule = MockkRule(this)
 
+    @get:Rule
+    val coroutineTestRule = CoroutinesRule()
+
     lateinit var useCase: LoadInfoDataUseCase
 
     @MockK(relaxed = true)
@@ -25,7 +29,7 @@ class LoadInfoDataUseCaseTest {
 
     @Test
     fun `지운 사진 갯수, 용량 데이터 로드`() {
-        useCase = LoadInfoDataUseCase(preferenceStorage)
+        useCase = LoadInfoDataUseCase(preferenceStorage, coroutineTestRule.testDispatcher)
 
         every {
             preferenceStorage.deletedCount
@@ -35,11 +39,10 @@ class LoadInfoDataUseCaseTest {
             preferenceStorage.deletedFileSize
         } returns 0L
 
-        val result = MutableLiveData<LoadInfoDataResult>()
-
-        useCase.invoke(Unit, result)
-
-        assert(result.getOrAwaitValue().deletedImageCount == 0L)
-        assert(result.getOrAwaitValue().deletedFileSize == 0L)
+        coroutineTestRule.testDispatcher.runBlockingTest {
+            val result = useCase.invoke(Unit).successOr(null)
+            assert(result?.deletedImageCount == 0L)
+            assert(result?.deletedFileSize == 0L)
+        }
     }
 }

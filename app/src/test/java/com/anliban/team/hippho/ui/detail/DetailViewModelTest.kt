@@ -2,19 +2,22 @@ package com.anliban.team.hippho.ui.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import com.anliban.team.hippho.CoroutinesRule
 import com.anliban.team.hippho.DummyData
 import com.anliban.team.hippho.MockkRule
 import com.anliban.team.hippho.data.ImageQueryOption
-import com.anliban.team.hippho.domain.DeleteImageUseCase
-import com.anliban.team.hippho.domain.GetImageByIdUseCase
-import com.anliban.team.hippho.domain.detail.ScaleImageAnimUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImageIndicatorUseCase
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionRequestParameters
-import com.anliban.team.hippho.domain.detail.SwitchImagePositionUseCase
+import com.anliban.team.hippho.domain.image.DeleteImageUseCase
+import com.anliban.team.hippho.domain.image.GetImageByIdUseCase
+import com.anliban.team.hippho.domain.image.ScaleImageAnimLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImageIndicatorRequestParameters
+import com.anliban.team.hippho.domain.image.SwitchImageIndicatorLiveDataUseCase
+import com.anliban.team.hippho.domain.image.SwitchImagePositionRequestParameters
+import com.anliban.team.hippho.domain.image.SwitchImagePositionLiveDataUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.getOrAwaitValue
+import com.anliban.team.hippho.model.successOr
+import com.anliban.team.hippho.util.requireValue
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -41,15 +44,18 @@ class DetailViewModelTest {
     lateinit var getImageByDateUseCase: GetImageByIdUseCase
 
     @MockK(relaxed = true)
-    lateinit var switchImagePositionUseCase: SwitchImagePositionUseCase
+    lateinit var switchImagePositionUseCase: SwitchImagePositionLiveDataUseCase
 
     @MockK(relaxed = true)
-    lateinit var switchImageIndicatorUseCase: SwitchImageIndicatorUseCase
+    lateinit var switchImageIndicatorUseCase: SwitchImageIndicatorLiveDataUseCase
 
-    lateinit var scaleImageAnimUseCase: ScaleImageAnimUseCase
+    lateinit var scaleImageAnimUseCase: ScaleImageAnimLiveDataUseCase
 
     @MockK(relaxed = true)
     lateinit var deleteImageUseCase: DeleteImageUseCase
+
+    @MockK(relaxed = true)
+    lateinit var savedStateHandle: SavedStateHandle
 
     private lateinit var viewModel: DetailViewModel
 
@@ -58,6 +64,8 @@ class DetailViewModelTest {
         val ids = DummyData.imageIds
         val images = DummyData.images
 
+        every { savedStateHandle.requireValue<LongArray>("ids") } returns ids
+
         val request = GetImageRequestParameters(
             option = ImageQueryOption.ID,
             ids = ids.toList()
@@ -65,7 +73,7 @@ class DetailViewModelTest {
 
         viewModel = createViewModel()
 
-        coVerify { getImageByDateUseCase.execute(request) }
+        coVerify { getImageByDateUseCase(request) }
 
         assert(viewModel.thumbnails.getOrAwaitValue() == images.mapDetailUiModel())
         assert(viewModel.secondLists.getOrAwaitValue() == images.mapDetailImageList())
@@ -78,14 +86,16 @@ class DetailViewModelTest {
 
         val mockSelectedImage = MutableLiveData(images.mapDetailImageList())
         val mockClickedId = MutableLiveData(images[0].id)
-        val selectedImageRequest = SwitchImagePositionRequestParameters(
-            model = selectedImage,
-            items = images.mapDetailImageList(),
-            clickedId = mockClickedId
-        )
+        val selectedImageRequest =
+            SwitchImagePositionRequestParameters(
+                model = selectedImage,
+                items = images.mapDetailImageList(),
+                clickedId = mockClickedId
+            )
 
-        every {
-            switchImagePositionUseCase(selectedImageRequest, mockSelectedImage)
+        coEvery {
+            mockSelectedImage.value =
+                switchImagePositionUseCase(selectedImageRequest).successOr(null)
         } just runs
 
         viewModel = createViewModel()
@@ -104,17 +114,21 @@ class DetailViewModelTest {
         val images = DummyData.images
         val changedPosition = images.size - 1
 
-        val useCase = SwitchImageIndicatorUseCase()
+        val useCase =
+            SwitchImageIndicatorLiveDataUseCase(
+                coroutineTestRule.testDispatcher
+            )
 
         val mockSelectedImage = MutableLiveData(images.mapDetailImageList())
         val mockClickedId = MutableLiveData(images[0].id)
-        val selectedImageRequest = SwitchImageIndicatorRequestParameters(
-            position = changedPosition,
-            items = images.mapDetailImageList(),
-            clickedId = mockClickedId
-        )
+        val selectedImageRequest =
+            SwitchImageIndicatorRequestParameters(
+                position = changedPosition,
+                items = images.mapDetailImageList(),
+                clickedId = mockClickedId
+            )
 
-        useCase(selectedImageRequest, mockSelectedImage)
+        mockSelectedImage.value = useCase(selectedImageRequest).successOr(null)
 
         val mockSelected = mockSelectedImage.getOrAwaitValue()
         val selectedPosition = mockSelected.indexOf(mockSelected.find { it.isSelected })
@@ -223,16 +237,21 @@ class DetailViewModelTest {
     private fun createViewModel(): DetailViewModel {
         val ids = DummyData.imageIds
 
+        every { savedStateHandle.requireValue<LongArray>("ids") } returns ids
+
         val request = GetImageRequestParameters(
             option = ImageQueryOption.ID,
             ids = DummyData.imageIds.toList()
         )
 
         coEvery {
-            getImageByDateUseCase.execute(request)
+            getImageByDateUseCase(request)
         } returns flowOf(DummyData.images)
 
-        scaleImageAnimUseCase = ScaleImageAnimUseCase()
+        scaleImageAnimUseCase =
+            ScaleImageAnimLiveDataUseCase(
+                coroutineTestRule.testDispatcher
+            )
 
         return DetailViewModel(
             getImageByDateUseCase,
@@ -240,7 +259,7 @@ class DetailViewModelTest {
             switchImageIndicatorUseCase,
             scaleImageAnimUseCase,
             deleteImageUseCase,
-            ids
+            savedStateHandle
         )
     }
 }

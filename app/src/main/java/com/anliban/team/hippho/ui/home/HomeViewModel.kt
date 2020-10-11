@@ -1,21 +1,22 @@
 package com.anliban.team.hippho.ui.home
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.anliban.team.hippho.data.ImageQueryOption
-import com.anliban.team.hippho.domain.GetImageByDateUseCase
+import com.anliban.team.hippho.domain.image.GetImageByDateUseCase
 import com.anliban.team.hippho.domain.model.GetImageRequestParameters
 import com.anliban.team.hippho.model.Result
 import com.anliban.team.hippho.model.successOr
 import com.anliban.team.hippho.util.toLoadingState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(
+class HomeViewModel @ViewModelInject constructor(
     private val getImageByDateUseCase: GetImageByDateUseCase
 ) : ViewModel() {
 
@@ -26,6 +27,8 @@ class HomeViewModel @Inject constructor(
         get() = _imageList
 
     val swipeRefreshing: LiveData<Boolean>
+
+    private var loadImagesJob: Job? = null
 
     init {
 
@@ -39,8 +42,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun loadImages() {
-        viewModelScope.launch {
-            getImageByDateUseCase.execute(GetImageRequestParameters(ImageQueryOption.DATE))
+        loadImagesJob?.cancel()
+        loadImagesJob = viewModelScope.launch {
+            getImageByDateUseCase(GetImageRequestParameters(ImageQueryOption.DATE))
                 .toLoadingState()
                 .collect {
                     homeUiResult.value = it

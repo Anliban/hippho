@@ -29,7 +29,7 @@
         tools:layout="@layout/fragment_detail">
 
         <argument
-            android:name="images"
+            android:name="ids"
             app:argType="long[]"
             app:nullable="false" />
     </fragment>

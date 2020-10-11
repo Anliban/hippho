@@ -10,8 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.anliban.team.hippho.R
@@ -21,25 +22,17 @@ import com.anliban.team.hippho.ui.home.adapter.ImageMarginItemDecoration
 import com.anliban.team.hippho.util.attachSnapHelperWithListener
 import com.anliban.team.hippho.util.dp2px
 import com.anliban.team.hippho.util.showSnackBar
-import com.anliban.team.hippho.util.viewModel
 import com.anliban.team.hippho.widget.OnSnapPositionChangeListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.android.support.DaggerFragment
-import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
+import dev.chrisbanes.insetter.Insetter
 
-class DetailFragment : DaggerFragment() {
+@AndroidEntryPoint
+class DetailFragment : Fragment() {
 
     private lateinit var binding: FragmentDetailBinding
 
-    private val args: DetailFragmentArgs by navArgs()
-
-    @Inject
-    lateinit var viewModelFactory: DetailViewModel.Factory
-
-    private val viewModel: DetailViewModel by viewModel {
-        viewModelFactory.create(args.images)
-    }
+    private val viewModel: DetailViewModel by viewModels<DetailViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,11 +50,11 @@ class DetailFragment : DaggerFragment() {
             lifecycleOwner = viewLifecycleOwner
         }
 
-        binding.root.doOnApplyWindowInsets { view, insets, initialState ->
+        Insetter.builder().setOnApplyInsetsListener { view, insets, initialState ->
             view.updatePadding(
                 bottom = insets.systemWindowInsetBottom + initialState.paddings.bottom
             )
-        }
+        }.applyToView(binding.root)
 
         setHasOptionsMenu(true)
         return binding.root
@@ -131,7 +124,7 @@ class DetailFragment : DaggerFragment() {
 
     class RequestDeletedDialogFragment(private val action: () -> Unit) : DialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            return MaterialAlertDialogBuilder(context)
+            return MaterialAlertDialogBuilder(requireContext())
                 .setMessage(R.string.request_deleted_images_text)
                 .setPositiveButton(android.R.string.ok) { _, _ -> action() }
                 .setNegativeButton(android.R.string.cancel, null) // Give up

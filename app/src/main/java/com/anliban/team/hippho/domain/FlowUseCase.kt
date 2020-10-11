@@ -1,7 +1,12 @@
 package com.anliban.team.hippho.domain
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 
-abstract class FlowUseCase<T, R> {
-    abstract fun execute(parameters: T): Flow<R>
+abstract class FlowUseCase<in P, R>(private val coroutineDispatcher: CoroutineDispatcher) {
+    operator fun invoke(parameters: P): Flow<R> = execute(parameters)
+        .flowOn(coroutineDispatcher)
+
+    protected abstract fun execute(parameters: P): Flow<R>
 }

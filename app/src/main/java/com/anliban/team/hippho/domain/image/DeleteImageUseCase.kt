@@ -1,4 +1,4 @@
-package com.anliban.team.hippho.domain
+package com.anliban.team.hippho.domain.image
 
 import com.anliban.team.hippho.data.MediaProvider
 import com.anliban.team.hippho.data.pref.PreferenceStorage
